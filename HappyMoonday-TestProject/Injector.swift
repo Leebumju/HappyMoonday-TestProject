@@ -19,6 +19,21 @@ struct Injector {
             return RemoteDataFetcher()
         }
         
+        container.register(LocalDataFetchable.self) { _ in
+            return LocalDataFetcher()
+        }
+        
+        container.register(LibraryRepositoryProtocol.self) { resolver in
+            let repository = LibraryRepository(remoteDataFetcher: resolver.resolve(RemoteDataFetchable.self)!,
+                                              localDataFetcher: resolver.resolve(LocalDataFetchable.self)!)
+            return repository
+        }
+        
+        container.register(LibraryUsecaseProtocol.self) { resolver in
+            let usecase = LibraryUsecase(repository: resolver.resolve(LibraryRepositoryProtocol.self)!)
+            return usecase
+        }
+        
         return container
     }()
 }

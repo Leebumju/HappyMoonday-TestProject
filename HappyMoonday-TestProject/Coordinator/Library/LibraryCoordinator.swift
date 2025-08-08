@@ -15,9 +15,11 @@ final class LibraryCoordinator: NSObject, LibraryCoordinatable {
     var rootViewController: UIViewController = UIViewController()
     
     func start() -> UIViewController {
-        let libraryVC = LibraryMainViewController()
-//        LibraryCoordinator.coordinator = self
+        let viewModel: LibraryMainViewModel = LibraryMainViewModel(usecase: Injector.shared.resolve(LibraryUsecaseProtocol.self)!)
+        let libraryVC = LibraryMainViewController(viewModel: viewModel)
+        libraryVC.coordinator = self
         rootViewController = UINavigationController(rootViewController: libraryVC)
+        
         return rootViewController
     }
     

@@ -7,4 +7,6 @@
 
 import Foundation
 
-protocol RemoteDataFetchable: AnyObject {}
+protocol RemoteDataFetchable: AnyObject {
+    func searchBooks() async throws
+}
