@@ -8,16 +8,16 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    var coordinator: AnyAppCoordinator?
     var window: UIWindow?
-
-
+    private var currentScene: UIScene?
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = ViewController()
-        window?.makeKeyAndVisible()
+        currentScene = scene
+        coordinator = AppCoordinator()
+        setRootViewController(coordinator!.start())
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -48,6 +48,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    private func setRootViewController(_ viewController: UIViewController) {
+        guard let scene = (currentScene as? UIWindowScene) else { return }
+        
+        window = UIWindow(frame: scene.coordinateSpace.bounds)
+        window?.windowScene = scene
+        window?.rootViewController = viewController
+        window?.makeKeyAndVisible()
+    }
 }
 
