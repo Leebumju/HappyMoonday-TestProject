@@ -14,6 +14,17 @@ final class LibraryMainViewController: BaseViewController{
     private var cancelBag = Set<AnyCancellable>()
     var coordinator: AnyLibraryCoordinator?
     
+    private lazy var titleLabel: UILabel = UILabel().then {
+        $0.text = "책"
+    }
+    
+    private lazy var bookListView = UICollectionView(frame: .zero, collectionViewLayout: layout()).then {
+        $0.dataSource = self
+        $0.showsVerticalScrollIndicator = false
+        $0.contentInsetAdjustmentBehavior = .never
+        $0.registerCell(ReadingBookCell.self)
+    }
+    
     private let viewModel: LibraryMainViewModel
     
     init(viewModel: LibraryMainViewModel) {
@@ -28,18 +39,28 @@ final class LibraryMainViewController: BaseViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .yellow
-        // Do any additional setup after loading the view.
-        
+    
         bind()
     }
     
     override func addViews() {
-        
+        view.addSubviews([titleLabel,
+                          bookListView])
     }
     
     override func makeConstraints() {
+        let tabBarHeight: CGFloat = tabBarController?.tabBar.bounds.height ?? moderateScale(number: 48) + getSafeAreaBottom()
         
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(getSafeAreaTop() + moderateScale(number: 24))
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        bookListView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(moderateScale(number: 20))
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(moderateScale(number: -tabBarHeight))
+        }
     }
     
     override func setupIfNeeded() {
@@ -54,5 +75,55 @@ final class LibraryMainViewController: BaseViewController{
                                          submitText: "확인",
                                          submitCompletion: nil)
             }.store(in: &cancelBag)
+    }
+    
+    private func layout() -> UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout { [weak self] _, _ in
+            guard let self = self else { return nil }
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+            
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .absolute(moderateScale(number: 200))
+            )
+            
+            let sectionLayout = NSCollectionLayoutSection(
+                group: NSCollectionLayoutGroup.horizontal(
+                    layoutSize: groupSize,
+                    subitems: [NSCollectionLayoutItem(layoutSize: itemSize)]
+                )
+            )
+            
+            sectionLayout.orthogonalScrollingBehavior = .groupPagingCentered
+            
+            return sectionLayout
+        }
+    }
+}
+
+extension LibraryMainViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//        switch indexPath.section {
+//        case 0:
+//        }
+//    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
+        
+        cell.updateView()
+        return cell
     }
 }
