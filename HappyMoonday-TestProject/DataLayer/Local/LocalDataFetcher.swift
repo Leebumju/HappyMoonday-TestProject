@@ -12,7 +12,6 @@ import RealmSwift
 final class LocalDataFetcher: LocalDataFetchable {
     func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to categoryName: BookCategory) throws {
         let realm = try Realm()
-        
         try realm.write {
             let category = realm.objects(BookCategoryEntity.self)
                 .filter("name == %@", categoryName.rawValue)
@@ -24,13 +23,17 @@ final class LocalDataFetcher: LocalDataFetchable {
                     return newCategory
                 }()
             
-            if category.books.contains(where: { $0.isbn == bookEntity.isbn }) {
-                return
+            let realmBook: RealmBookItem
+            if let existingBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: bookEntity.isbn) {
+                realmBook = existingBook
+            } else {
+                realmBook = RealmBookItem(from: bookEntity)
+                realm.add(realmBook)
             }
             
-            let realmBook = RealmBookItem(from: bookEntity)
-            realm.add(realmBook)
-            category.books.append(realmBook)
+            if !category.books.contains(realmBook) {
+                category.books.append(realmBook)
+            }
         }
     }
     
