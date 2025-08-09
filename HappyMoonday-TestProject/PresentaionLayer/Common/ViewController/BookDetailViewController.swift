@@ -82,6 +82,29 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         $0.numberOfLines = 0
     }
     
+    private lazy var bookStateStackView: UIStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = moderateScale(number: 4)
+    }
+    
+    private lazy var readingBookImageView: TouchableImageView = TouchableImageView(frame: .zero).then {
+        $0.image = UIImage(systemName: "book.fill")?.withTintColor(.systemGray6,
+                                                                   renderingMode: .alwaysOriginal)
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var wantToReadBookImageView: UIImageView = UIImageView().then {
+        $0.image = UIImage(systemName: "star.fill")?.withTintColor(.systemGray6,
+                                                                   renderingMode: .alwaysOriginal)
+        $0.contentMode = .scaleAspectFit
+    }
+
+    private lazy var readDoneBookImageView: UIImageView = UIImageView().then {
+        $0.image = UIImage(systemName: "checkmark.seal.fill")?.withTintColor(.systemGray6,
+                                                                   renderingMode: .alwaysOriginal)
+        $0.contentMode = .scaleAspectFit
+    }
+    
     private let viewModel: BookDetailViewModel
     
     init(viewModel: BookDetailViewModel) {
@@ -107,7 +130,11 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
         containerView.addSubviews([bookImageView,
-                                  bookDetailStackView])
+                                   bookStateStackView,
+                                   bookDetailStackView])
+        bookStateStackView.addArrangedSubviews([readingBookImageView,
+                                                wantToReadBookImageView,
+                                                readDoneBookImageView])
         bookDetailStackView.addArrangedSubviews([bookTitleLabel,
                                                  linkLabel,
                                                  authorLabel,
@@ -137,9 +164,23 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
             $0.height.equalTo(moderateScale(number: 200))
         }
         
+        bookStateStackView.snp.makeConstraints {
+            $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 10))
+            $0.trailing.equalToSuperview()
+        }
+        
+        [readingBookImageView,
+         wantToReadBookImageView,
+         readDoneBookImageView].forEach {
+            $0.snp.makeConstraints {
+                $0.size.equalTo(moderateScale(number: 24))
+            }
+        }
+        
         bookDetailStackView.snp.makeConstraints {
-            $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 20))
+            $0.top.equalTo(bookStateStackView.snp.bottom).offset(moderateScale(number: 20))
             $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
         }
     }
     
