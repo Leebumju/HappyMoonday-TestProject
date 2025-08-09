@@ -31,6 +31,8 @@ class SearchBooksMainViewController: BaseViewController {
         $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
     
+    private lazy var searchKeywordView: AlignedContainerView = AlignedContainerView()
+    
     private lazy var searchImageView: UIImageView = UIImageView().then {
         $0.image = UIImage(systemName: "magnifyingglass")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
         $0.contentMode = .scaleAspectFit
@@ -64,11 +66,14 @@ class SearchBooksMainViewController: BaseViewController {
     override func addViews() {
         view.addSubviews([titleLabel,
                           searchTextField,
+                          searchKeywordView,
                           searchedBookListView])
         searchTextField.addSubview(searchImageView)
     }
     
     override func makeConstraints() {
+        let tabBarHeight: CGFloat = tabBarController?.tabBar.bounds.height ?? moderateScale(number: 48) + getSafeAreaBottom()
+        
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(getSafeAreaTop()).offset(moderateScale(number: 100))
             $0.leading.trailing.equalToSuperview()
@@ -80,6 +85,11 @@ class SearchBooksMainViewController: BaseViewController {
             $0.height.equalTo(moderateScale(number: 56))
         }
         
+        searchKeywordView.snp.makeConstraints {
+            $0.top.equalTo(searchTextField.snp.bottom).offset(moderateScale(number: 4))
+            $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
+        }
+        
         searchImageView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(moderateScale(number: 16))
             $0.centerY.equalToSuperview()
@@ -87,13 +97,14 @@ class SearchBooksMainViewController: BaseViewController {
         }
         
         searchedBookListView.snp.makeConstraints {
-            $0.top.equalTo(searchTextField.snp.bottom).offset(moderateScale(number: 16))
+            $0.top.equalTo(searchKeywordView.snp.bottom).offset(moderateScale(number: 10))
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(getDefaultSafeAreaBottom())
+            $0.bottom.equalToSuperview().offset(moderateScale(number: -tabBarHeight))
         }
     }
     
     override func setupIfNeeded() {
+        
     }
     
     private func bind() {
@@ -113,8 +124,25 @@ class SearchBooksMainViewController: BaseViewController {
         
         viewModel.recentKeywordPublisher
             .droppedSink { [weak self] keywords in
+                guard let self = self else { return }
                 print(">>>>>keyword")
                 print(keywords)
+                var searchKeywordViews: [UIView] = []
+                for keyword in keywords {
+                    let keywordView: PaddedView = PaddedView(vertical: 3, horizontal: 8).then {
+                        $0.titleLabel.text = keyword
+                        $0.titleLabel.textColor = .systemGray3
+                        $0.titleLabel.textAlignment = .center
+                        $0.backgroundColor = .systemGray6
+                        $0.layer.masksToBounds = true
+                        $0.layer.cornerRadius = moderateScale(number: 10)
+                    }
+                    
+                    searchKeywordViews.append(keywordView)
+                }
+                
+                searchKeywordView.layoutIfNeeded()
+                searchKeywordView.arrangeViews(searchKeywordViews)
             }.store(in: &cancelBag)
         
         viewModel.fetchRecentSearchKeyword()
