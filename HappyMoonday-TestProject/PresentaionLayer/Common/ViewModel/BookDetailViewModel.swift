@@ -18,4 +18,10 @@ final class BookDetailViewModel: BaseViewModel {
         
         super.init(usecase: usecase)
     }
+    
+//    private func changeBookCategory(with category: BookCategory) throws {
+//        do {
+//            try usecase.changeBookCategory(with: category)
+//        } catch { throw error }
+//    }
 }

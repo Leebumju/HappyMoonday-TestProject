@@ -6,7 +6,11 @@
 //
 
 protocol SearchBooksUsecaseProtocol: BaseUsecaseProtocol {
+    // MARK: - REMOTE
     func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity
+    
+    // MARK: - LOCAL
     func saveRecentSearchKeyword(_ keyword: String) throws
     func fetchRecentKeywords() -> [String]
+//    func changeBookCategory(with category: BookCategory)
 }

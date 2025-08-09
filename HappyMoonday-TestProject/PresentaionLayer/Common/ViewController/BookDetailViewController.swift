@@ -83,8 +83,8 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     }
     
     private lazy var bookStateStackView: UIStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = moderateScale(number: 4)
+        $0.axis = .vertical
+        $0.spacing = moderateScale(number: 10)
     }
     
     private lazy var readingBookImageView: TouchableImageView = TouchableImageView(frame: .zero).then {
@@ -93,13 +93,13 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var wantToReadBookImageView: UIImageView = UIImageView().then {
+    private lazy var wantToReadBookImageView: TouchableImageView = TouchableImageView(frame: .zero).then {
         $0.image = UIImage(systemName: "star.fill")?.withTintColor(.systemGray6,
                                                                    renderingMode: .alwaysOriginal)
         $0.contentMode = .scaleAspectFit
     }
 
-    private lazy var readDoneBookImageView: UIImageView = UIImageView().then {
+    private lazy var readDoneBookImageView: TouchableImageView = TouchableImageView(frame: .zero).then {
         $0.image = UIImage(systemName: "checkmark.seal.fill")?.withTintColor(.systemGray6,
                                                                    renderingMode: .alwaysOriginal)
         $0.contentMode = .scaleAspectFit
@@ -165,12 +165,11 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         }
         
         bookStateStackView.snp.makeConstraints {
-            $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 10))
+            $0.bottom.equalTo(bookImageView)
             $0.trailing.equalToSuperview()
         }
         
-        [readingBookImageView,
-         wantToReadBookImageView,
+        [wantToReadBookImageView,
          readDoneBookImageView].forEach {
             $0.snp.makeConstraints {
                 $0.size.equalTo(moderateScale(number: 24))
@@ -178,7 +177,7 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         }
         
         bookDetailStackView.snp.makeConstraints {
-            $0.top.equalTo(bookStateStackView.snp.bottom).offset(moderateScale(number: 20))
+            $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 20))
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
@@ -186,6 +185,24 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     
     override func setupIfNeeded() {
         super.setupIfNeeded()
+        
+        readingBookImageView.didTapped { [weak self] in
+            CommonUtil.showAlertView(title: "카테고리 추가",
+                                     description: "읽고 있는 책 카테고리에 추가할게요!",
+                                     submitCompletion: nil)
+        }
+        
+        wantToReadBookImageView.didTapped { [weak self] in
+            CommonUtil.showAlertView(title: "카테고리 추가",
+                                     description: "읽고 싶은 책 카테고리에 추가할게요!",
+                                     submitCompletion: nil)
+        }
+        
+        readDoneBookImageView.didTapped { [weak self] in
+            CommonUtil.showAlertView(title: "카테고리 추가",
+                                     description: "읽었던 책 카테고리에 추가할게요!",
+                                     submitCompletion: nil)
+        }
     }
     
     private func bind() {

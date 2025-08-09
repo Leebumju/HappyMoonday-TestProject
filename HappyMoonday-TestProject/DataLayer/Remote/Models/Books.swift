@@ -5,6 +5,12 @@
 //  Created by 이범준 on 8/9/25.
 //
 
+enum BookCategory {
+    case reading
+    case wantToRead
+    case readDone
+}
+
 enum Book {
     struct Request {
         var query: String // 검색어. UTF-8로 인코딩되어야 합니다.

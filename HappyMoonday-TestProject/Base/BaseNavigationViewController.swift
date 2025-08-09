@@ -13,9 +13,7 @@ import SnapKit
 class BaseNavigationViewController: BaseViewController {
     private var cancelBag = Set<AnyCancellable>()
     
-    private(set) lazy var topView: UIView = UIView().then {
-        $0.backgroundColor = .green
-    }
+    private(set) lazy var topView: UIView = UIView()
     
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.textColor = .systemGray
@@ -24,7 +22,7 @@ class BaseNavigationViewController: BaseViewController {
     private(set) lazy var backButton = TouchableView()
     
     private(set) lazy var backImageView = UIImageView().then {
-        $0.image = UIImage(systemName: "circle.fill")
+        $0.image = UIImage(systemName: "chevron.left")?.withTintColor(.black, renderingMode: .alwaysOriginal)
         $0.contentMode = .scaleAspectFit
     }
     
