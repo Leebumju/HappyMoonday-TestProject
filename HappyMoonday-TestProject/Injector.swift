@@ -34,6 +34,17 @@ struct Injector {
             return usecase
         }
         
+        container.register(SearchBooksRepositoryProtocol.self) { resolver in
+            let repository = SearchBooksRepository(remoteDataFetcher: resolver.resolve(RemoteDataFetchable.self)!,
+                                              localDataFetcher: resolver.resolve(LocalDataFetchable.self)!)
+            return repository
+        }
+        
+        container.register(SearchBooksUsecaseProtocol.self) { resolver in
+            let usecase = SearchBooksUsecase(repository: resolver.resolve(SearchBooksRepositoryProtocol.self)!)
+            return usecase
+        }
+        
         return container
     }()
 }

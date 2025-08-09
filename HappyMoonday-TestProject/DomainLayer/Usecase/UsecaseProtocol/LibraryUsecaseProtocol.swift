@@ -6,5 +6,5 @@
 //
 
 protocol LibraryUsecaseProtocol: BaseUsecaseProtocol {
-    func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity
+
 }

@@ -1,5 +1,5 @@
 //
-//  LibaryMainViewController.swift
+//  SearchMainViewController.swift
 //  HappyMoonday-TestProject
 //
 //  Created by 이범준 on 8/8/25.
@@ -9,14 +9,14 @@ import UIKit
 import SnapKit
 import Then
 import Combine
+class SearchBooksMainViewController: BaseViewController {
 
-final class LibraryMainViewController: BaseViewController{
     private var cancelBag = Set<AnyCancellable>()
-    var coordinator: AnyLibraryCoordinator?
+    var coordinator: AnySearchCoordinator?
     
-    private let viewModel: LibraryMainViewModel
+    private let viewModel: SearchBooksMainViewModel
     
-    init(viewModel: LibraryMainViewModel) {
+    init(viewModel: SearchBooksMainViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -43,7 +43,7 @@ final class LibraryMainViewController: BaseViewController{
     }
     
     override func setupIfNeeded() {
-        
+        searchBooks()
     }
     
     private func bind() {
@@ -54,5 +54,13 @@ final class LibraryMainViewController: BaseViewController{
                                          submitText: "확인",
                                          submitCompletion: nil)
             }.store(in: &cancelBag)
+    }
+    
+    private func searchBooks() {
+        Task {
+            do {
+                try await viewModel.searchBooks()
+            } catch {}
+        }
     }
 }

@@ -19,14 +19,6 @@ final class LibraryUsecase {
 }
 
 extension LibraryUsecase: LibraryUsecaseProtocol {
-    func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity {
-        do {
-            return try await repository.searchBooks(with: requestModel)
-        } catch {
-            errorSubject.send(error)
-            throw error
-        }
-    }
     
     func getErrorSubject() -> AnyPublisher<Error, Never> {
         return errorSubject.eraseToAnyPublisher()

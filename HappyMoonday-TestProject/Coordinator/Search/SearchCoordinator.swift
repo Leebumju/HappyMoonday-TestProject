@@ -15,8 +15,9 @@ final class SearchCoordinator: NSObject, SearchCoordinatable {
     var rootViewController: UIViewController = UIViewController()
     
     func start() -> UIViewController {
-        let searchVC = SearchMainViewController()
-//        searchVC.coordinator = self
+        let viewModel: SearchBooksMainViewModel = SearchBooksMainViewModel(usecase: Injector.shared.resolve(SearchBooksUsecaseProtocol.self)!)
+        let searchVC = SearchBooksMainViewController(viewModel: viewModel)
+        searchVC.coordinator = self
         rootViewController = UINavigationController(rootViewController: searchVC)
         return rootViewController
     }

@@ -1,5 +1,5 @@
 //
-//  LibraryRepository.swift
+//  SearchBooksRepository.swift
 //  HappyMoonday-TestProject
 //
 //  Created by 이범준 on 8/9/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class LibraryRepository {
+final class SearchBooksRepository {
     private let remoteDataFetcher: RemoteDataFetchable
     private let localDataFetcher: LocalDataFetchable
     
@@ -17,6 +17,8 @@ final class LibraryRepository {
     }
 }
 
-extension LibraryRepository: LibraryRepositoryProtocol {
-    
+extension SearchBooksRepository: SearchBooksRepositoryProtocol {
+    func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity {
+        return try await remoteDataFetcher.searchBooks(with: requestModel)
+    }
 }
