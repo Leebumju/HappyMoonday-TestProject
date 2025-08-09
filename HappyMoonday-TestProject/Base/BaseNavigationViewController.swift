@@ -13,8 +13,12 @@ import SnapKit
 class BaseNavigationViewController: BaseViewController {
     private var cancelBag = Set<AnyCancellable>()
     
-    private lazy var topView: UIView = UIView().then {
+    private(set) lazy var topView: UIView = UIView().then {
         $0.backgroundColor = .green
+    }
+    
+    private lazy var titleLabel: UILabel = UILabel().then {
+        $0.textColor = .systemGray
     }
     
     private(set) lazy var backButton = TouchableView()
@@ -37,7 +41,8 @@ class BaseNavigationViewController: BaseViewController {
     
     override func addViews() {
         view.addSubview(topView)
-        topView.addSubview(backButton)
+        topView.addSubviews([backButton,
+                             titleLabel])
         backButton.addSubview(backImageView)
     }
     
@@ -56,6 +61,12 @@ class BaseNavigationViewController: BaseViewController {
             $0.size.equalTo(moderateScale(number: buttonMargin + 24 + buttonMargin))
         }
         
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalTo(backButton.snp.trailing).offset(moderateScale(number: 8))
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview()
+        }
+        
         backImageView.snp.makeConstraints {
             $0.center.equalToSuperview()
             $0.size.equalTo(moderateScale(number: 24))
@@ -66,5 +77,9 @@ class BaseNavigationViewController: BaseViewController {
         backButton.didTapped { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }
+    }
+    
+    func updateTitleLabel(with titleText: String) {
+        titleLabel.text = titleText
     }
 }

@@ -10,9 +10,12 @@ import Combine
 
 final class BookDetailViewModel: BaseViewModel {
     private let usecase: SearchBooksUsecaseProtocol
+    private(set) var bookInfo: Book.Entity.BookItem
 
-    init(usecase: SearchBooksUsecaseProtocol) {
+    init(usecase: SearchBooksUsecaseProtocol, bookInfo: Book.Entity.BookItem) {
         self.usecase = usecase
+        self.bookInfo = bookInfo
+        
         super.init(usecase: usecase)
     }
 }

@@ -14,11 +14,80 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     private var cancelBag = Set<AnyCancellable>()
     var coordinator: AnyCommonCoordinator?
     
+    private lazy var scrollView: UIScrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+    }
+    
+    private lazy var containerView: UIView = UIView()
+    
+    private lazy var bookImageView: UIImageView = UIImageView().then {
+        $0.setImageWithSpinner(
+            urlString: viewModel.bookInfo.image,
+            placeholder: UIImage(systemName: "photo")
+        )
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var bookDetailStackView: UIStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.alignment = .leading
+        $0.spacing = moderateScale(number: 4)
+    }
+    
+    private lazy var bookTitleLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.title
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var linkLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.link
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var authorLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.author
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var discountLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.discount
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var publisherLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.publisher
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var pubdateLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.pubdate
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var isbnLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.isbn
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var descriptionLabel: UILabel = UILabel().then {
+        $0.text = viewModel.bookInfo.description
+        $0.textColor = .systemGray
+        $0.numberOfLines = 0
+    }
+    
     private let viewModel: BookDetailViewModel
     
     init(viewModel: BookDetailViewModel) {
         self.viewModel = viewModel
         super.init()
+        self.updateTitleLabel(with: viewModel.bookInfo.title)
     }
     
     @available(*, unavailable)
@@ -28,18 +97,50 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .yellow
-        // Do any additional setup after loading the view.
         
         bind()
     }
     
     override func addViews() {
         super.addViews()
+        
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
+        containerView.addSubviews([bookImageView,
+                                  bookDetailStackView])
+        bookDetailStackView.addArrangedSubviews([bookTitleLabel,
+                                                 linkLabel,
+                                                 authorLabel,
+                                                 isbnLabel,
+                                                 pubdateLabel,
+                                                 discountLabel,
+                                                 publisherLabel,
+                                                 descriptionLabel])
     }
     
     override func makeConstraints() {
         super.makeConstraints()
+        
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(topView.snp.bottom)
+            $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
+            $0.bottom.equalToSuperview().inset(getSafeAreaBottom())
+        }
+        
+        containerView.snp.makeConstraints {
+            $0.edges.width.equalToSuperview()
+        }
+        
+        bookImageView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(moderateScale(number: 20))
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(moderateScale(number: 200))
+        }
+        
+        bookDetailStackView.snp.makeConstraints {
+            $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 20))
+            $0.leading.trailing.equalToSuperview()
+        }
     }
     
     override func setupIfNeeded() {

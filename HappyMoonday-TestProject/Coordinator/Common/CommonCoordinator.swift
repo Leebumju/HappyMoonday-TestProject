@@ -26,7 +26,10 @@ final class CommonCoordinator: CommonCoordinatable {
     }
     
     private func moveToBookDetailScene(_ userData: [String: Any]?) {
-        let viewModel: BookDetailViewModel = BookDetailViewModel(usecase: Injector.shared.resolve(SearchBooksUsecaseProtocol.self)!)
+        guard let bookInfo = userData?["bookInfo"] as? Book.Entity.BookItem else { return }
+        let viewModel: BookDetailViewModel = BookDetailViewModel(usecase: Injector.shared.resolve(SearchBooksUsecaseProtocol.self)!,
+                                                                 bookInfo: bookInfo)
+        
         let bookDetailVC = BookDetailViewController(viewModel: viewModel)
         bookDetailVC.coordinator = self
         currentNavigationViewController?.pushViewController(bookDetailVC, animated: true)

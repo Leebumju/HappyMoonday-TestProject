@@ -228,7 +228,7 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
             let book: Book.Entity.BookItem = searchedBooks.items[indexPath.item]
             cell.updateView(with: book)
             cell.containerView.didTapped { [weak self] in
-                self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail), userData: nil)
+                self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail), userData: ["bookInfo": book])
             }
             
             return cell
