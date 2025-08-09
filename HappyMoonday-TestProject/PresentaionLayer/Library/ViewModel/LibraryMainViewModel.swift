@@ -10,6 +10,17 @@ import Combine
 
 final class LibraryMainViewModel: BaseViewModel {
     private let usecase: LibraryUsecaseProtocol
+    private var searchBookRequestModel: Book.Request = .init(query: "동물",
+                                                             display: nil,
+                                                             start: nil,
+                                                             sort: nil)
+    private let searchedBooksSubject = CurrentValueSubject<Book.Entity?, Never>(nil)
+    var searchedBooks: Book.Entity? {
+        return searchedBooksSubject.value
+    }
+    var searchedBooksPublisher: AnyPublisher<Book.Entity?, Never> {
+        return searchedBooksSubject.eraseToAnyPublisher()
+    }
     
     init(usecase: LibraryUsecaseProtocol) {
         self.usecase = usecase
@@ -17,6 +28,9 @@ final class LibraryMainViewModel: BaseViewModel {
     }
     
     func searchBooks() async throws {
-        try await usecase.searchBooks()
+        do {
+            let searchedBooks = try await usecase.searchBooks(with: searchBookRequestModel)
+            searchedBooksSubject.send(searchedBooks)
+        } catch { throw error }
     }
 }

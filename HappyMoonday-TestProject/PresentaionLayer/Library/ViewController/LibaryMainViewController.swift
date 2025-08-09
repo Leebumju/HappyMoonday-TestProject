@@ -31,7 +31,29 @@ final class LibraryMainViewController: BaseViewController{
         view.backgroundColor = .yellow
         // Do any additional setup after loading the view.
         
+        bind()
+    }
+    
+    override func addViews() {
+        
+    }
+    
+    override func makeConstraints() {
+        
+    }
+    
+    override func setupIfNeeded() {
         searchBooks()
+    }
+    
+    private func bind() {
+        viewModel.getErrorSubject()
+            .mainSink { [weak self] error in
+                CommonUtil.showAlertView(title: "error",
+                                         description: error.localizedDescription,
+                                         submitText: "확인",
+                                         submitCompletion: nil)
+            }.store(in: &cancelBag)
     }
     
     private func searchBooks() {

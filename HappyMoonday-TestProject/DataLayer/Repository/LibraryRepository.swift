@@ -18,7 +18,7 @@ final class LibraryRepository {
 }
 
 extension LibraryRepository: LibraryRepositoryProtocol {
-    func searchBooks() async throws {
-        return try await remoteDataFetcher.searchBooks()
+    func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity {
+        return try await remoteDataFetcher.searchBooks(with: requestModel)
     }
 }

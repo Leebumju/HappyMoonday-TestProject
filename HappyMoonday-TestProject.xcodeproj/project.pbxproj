@@ -14,6 +14,7 @@
 		D88D51812E46395A000329AD /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51802E46395A000329AD /* Swinject */; };
 		D88D51842E463981000329AD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51832E463981000329AD /* SnapKit */; };
 		D88D51872E4639D1000329AD /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51862E4639D1000329AD /* Then */; };
+		D88D531D2E46E0E8000329AD /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D88D531C2E46E0E8000329AD /* Lottie */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 				D88D51842E463981000329AD /* SnapKit in Frameworks */,
 				D88D517E2E46390A000329AD /* RxMoya in Frameworks */,
 				D88D517C2E46390A000329AD /* ReactiveMoya in Frameworks */,
+				D88D531D2E46E0E8000329AD /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +104,7 @@
 				D88D51802E46395A000329AD /* Swinject */,
 				D88D51832E463981000329AD /* SnapKit */,
 				D88D51862E4639D1000329AD /* Then */,
+				D88D531C2E46E0E8000329AD /* Lottie */,
 			);
 			productName = "HappyMoonday-TestProject";
 			productReference = D8B102052E4600E800CB04DF /* HappyMoonday-TestProject.app */;
@@ -136,6 +139,7 @@
 				D88D517F2E46395A000329AD /* XCRemoteSwiftPackageReference "Swinject" */,
 				D88D51822E463981000329AD /* XCRemoteSwiftPackageReference "SnapKit" */,
 				D88D51852E4639D1000329AD /* XCRemoteSwiftPackageReference "Then" */,
+				D88D531B2E46E0E8000329AD /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8B102062E4600E800CB04DF /* Products */;
@@ -397,6 +401,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		D88D531B2E46E0E8000329AD /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -434,6 +446,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D88D51852E4639D1000329AD /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
+		};
+		D88D531C2E46E0E8000329AD /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D88D531B2E46E0E8000329AD /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -11,23 +11,29 @@ import Moya
 final class RemoteDataFetcher: RemoteDataFetchable {
     private let networkWrapper: NetworkWrapper = NetworkWrapper.shared
     
-    func searchBooks() async throws {
+    func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity {
         do {
-            let params: [String: Any] = ["query": "해리포터"]
+            var params: [String: Any] = ["query": requestModel.query]
+            
+            if let display = requestModel.display {
+                params.updateValue(display, forKey: "display")
+            }
+            
+            if let start = requestModel.start {
+                params.updateValue(start, forKey: "start")
+            }
+            
+            if let sort = requestModel.sort {
+                params.updateValue(sort, forKey: "sort")
+            }
   
             let response = try await networkWrapper.fetchPublicService(.searchBooks(params: params))
             
-            if let responseString = String(data: response.data, encoding: .utf8) {
-                print(responseString)
-            } else {
-                print("응답 데이터를 문자열로 변환할 수 없습니다.")
+            guard let decodedResponse = try DecodeUtil.decode(Book.Response.self, data: response.data) else {
+                throw NetworkError.typeMismatch
             }
             
-//            guard let decodedResponse = try DecodeUtil.decode(Book.Search.self, data: response.data) else {
-//                throw NetworkError.typeMismatch
-//            }
-            
-//            return decodedResponse.entity
+            return decodedResponse.entity
         } catch {
             print(error)
             throw error
