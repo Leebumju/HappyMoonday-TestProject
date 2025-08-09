@@ -11,16 +11,17 @@ import Then
 
 final class NoDataCell: UICollectionViewCell {
     
-    private lazy var containerStackView: UIStackView = UIStackView().then {
+    private(set) lazy var containerStackView: TouchableStackView = TouchableStackView().then {
         $0.axis = .vertical
         $0.spacing = moderateScale(number: 10)
         $0.alignment = .center
     }
     
     private lazy var noDataLabel: UILabel = UILabel().then {
-        $0.text = "해당하는 책이 없어요.\n지금 추가해보세요!"
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
     }
     
     private lazy var confirmButton = TouchableLabel().then {
@@ -48,13 +49,26 @@ final class NoDataCell: UICollectionViewCell {
         }
         
         confirmButton.snp.makeConstraints {
-            $0.height.equalTo(moderateScale(number: 48))
-            $0.width.equalTo(moderateScale(number: 60))
+            $0.height.equalTo(moderateScale(number: 38))
+            $0.width.equalTo(moderateScale(number: 70))
         }
     }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func updateView(with category: BookCategory) {
+        let categoryText: String
+        switch category {
+        case .reading:
+            categoryText = "읽고 있는 책"
+        case .wantToRead:
+            categoryText = "읽고 싶은 책"
+        case .readDone:
+            categoryText = "읽은 책"
+        }
+        noDataLabel.text = "현재 보관함에 \(categoryText)이 없어요..\n지금 추가해보세요!"
     }
 }

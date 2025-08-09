@@ -24,6 +24,9 @@ final class LibraryMainViewController: BaseViewController{
         $0.contentInsetAdjustmentBehavior = .never
         $0.registerCell(ReadingBookCell.self)
         $0.registerCell(BookCell.self)
+        $0.registerCell(NoDataCell.self)
+        $0.registerSupplimentaryView(ReadingBookHeaderView.self, supplementaryViewOfKind: .header)
+        $0.registerSupplimentaryView(FavoriteBookHeaderView.self, supplementaryViewOfKind: .header)
     }
     
     private let viewModel: LibraryMainViewModel
@@ -104,6 +107,17 @@ final class LibraryMainViewController: BaseViewController{
                     heightDimension: .absolute(moderateScale(number: 200))
                 )
                 
+                let headerSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(moderateScale(number: 46))
+                )
+
+                let header = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: headerSize,
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )
+
                 let sectionLayout = NSCollectionLayoutSection(
                     group: NSCollectionLayoutGroup.horizontal(
                         layoutSize: groupSize,
@@ -111,17 +125,18 @@ final class LibraryMainViewController: BaseViewController{
                     )
                 )
                 
+                sectionLayout.boundarySupplementaryItems = [header]
                 sectionLayout.orthogonalScrollingBehavior = .groupPagingCentered
                 
                 return sectionLayout
             case 1, 2:
-                let itemSize: NSCollectionLayoutSize
-                itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                  heightDimension: .absolute(moderateScale(number: 200)))
-                
+                let itemSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                                              heightDimension: .absolute(moderateScale(number: 200)))
+                let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                        heightDimension: .estimated(moderateScale(number: 46)))
                 return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
                                                                           groupLayout: .init(size: itemSize),
-                                                                          sectionLayout: .init())
+                                                                          sectionLayout: .init(headerSize: headerSize))
             default: return nil
             }
         }
@@ -133,20 +148,103 @@ extension LibraryMainViewController: UICollectionViewDataSource {
         return 3
     }
     
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        switch indexPath.section {
-//        case 0:
-//        }
-//    }
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch indexPath.section {
+        case 0:
+            guard let readingHeaderView = collectionView.dequeueSupplimentaryView(ReadingBookHeaderView.self,
+                                                                                  supplementaryViewOfKind: .header,
+                                                                                  indexPath: indexPath) else { return .init() }
+           return readingHeaderView
+        case 1:
+            guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
+                                                                                  supplementaryViewOfKind: .header,
+                                                                                  indexPath: indexPath) else { return .init() }
+            favoriteBookHeaderView.updateView(with: "읽고 싶은 책 보관함")
+           return favoriteBookHeaderView
+        case 2:
+            guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
+                                                                                  supplementaryViewOfKind: .header,
+                                                                                  indexPath: indexPath) else { return .init() }
+            favoriteBookHeaderView.updateView(with: "읽은 책 보관함")
+           return favoriteBookHeaderView
+        default:
+            return UICollectionReusableView()
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        switch section {
+        case 0:
+            if viewModel.readingBooks.isEmpty {
+                return 1
+            } else {
+                return viewModel.readingBooks.count
+            }
+        case 1:
+            if viewModel.wantToReadBooks.isEmpty {
+                return 1
+            } else {
+                return viewModel.wantToReadBooks.count
+            }
+        case 2:
+            if viewModel.readDoneBooks.isEmpty {
+                return 1
+            } else {
+                return viewModel.readDoneBooks.count
+            }
+        default:
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
-        
-        cell.updateView()
-        return cell
+        switch indexPath.section {
+        case 0:
+            if viewModel.readingBooks.isEmpty {
+                guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+                cell.containerStackView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
+                }
+                cell.updateView(with: .reading)
+                return cell
+            } else {
+                guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
+                
+                cell.updateView()
+                return cell
+            }
+        case 1:
+            if viewModel.wantToReadBooks.isEmpty {
+                guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+                cell.containerStackView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
+                }
+                
+                cell.updateView(with: .wantToRead)
+                return cell
+            } else {
+                guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
+                
+                cell.updateView(with: viewModel.wantToReadBooks[indexPath.item])
+                return cell
+            }
+        case 2:
+            if viewModel.readDoneBooks.isEmpty {
+                guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+                cell.containerStackView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
+                }
+                
+                cell.updateView(with: .readDone)
+                return cell
+            } else {
+                guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
+                
+                cell.updateView(with: viewModel.readDoneBooks[indexPath.item])
+                return cell
+            }
+        default:
+            return UICollectionViewCell()
+        }
     }
 }
