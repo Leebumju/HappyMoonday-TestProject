@@ -5,7 +5,7 @@
 //  Created by 이범준 on 8/9/25.
 //
 
-enum BookCategory {
+enum BookCategory: String {
     case reading
     case wantToRead
     case readDone

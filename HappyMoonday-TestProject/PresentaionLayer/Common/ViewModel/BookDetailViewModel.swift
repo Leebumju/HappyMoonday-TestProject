@@ -19,9 +19,13 @@ final class BookDetailViewModel: BaseViewModel {
         super.init(usecase: usecase)
     }
     
-//    private func changeBookCategory(with category: BookCategory) throws {
-//        do {
-//            try usecase.changeBookCategory(with: category)
-//        } catch { throw error }
-//    }
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
+        do {
+            try usecase.changeBookCategory(bookEntity, to: category)
+        } catch { throw error }
+    }
+    
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
+        return usecase.fetchBooks(in: categoryName)
+    }
 }

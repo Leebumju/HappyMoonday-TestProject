@@ -122,6 +122,8 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         super.viewDidLoad()
         
         bind()
+        
+        print(">>>>>>1 \(viewModel.fetchBooks(in: .readDone))")
     }
     
     override func addViews() {
@@ -189,19 +191,19 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         readingBookImageView.didTapped { [weak self] in
             CommonUtil.showAlertView(title: "카테고리 추가",
                                      description: "읽고 있는 책 카테고리에 추가할게요!",
-                                     submitCompletion: nil)
+                                     submitCompletion: { self?.changeBookCategory(with: .reading) })
         }
         
         wantToReadBookImageView.didTapped { [weak self] in
             CommonUtil.showAlertView(title: "카테고리 추가",
                                      description: "읽고 싶은 책 카테고리에 추가할게요!",
-                                     submitCompletion: nil)
+                                     submitCompletion: { self?.changeBookCategory(with: .wantToRead) })
         }
         
         readDoneBookImageView.didTapped { [weak self] in
             CommonUtil.showAlertView(title: "카테고리 추가",
                                      description: "읽었던 책 카테고리에 추가할게요!",
-                                     submitCompletion: nil)
+                                     submitCompletion: { self?.changeBookCategory(with: .readDone) })
         }
     }
     
@@ -213,5 +215,14 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
                                          submitText: "확인",
                                          submitCompletion: nil)
             }.store(in: &cancelBag)
+    }
+    
+    private func changeBookCategory(with category: BookCategory) {
+        do {
+            CommonUtil.showLoadingView()
+            try viewModel.changeBookCategory(viewModel.bookInfo,
+                                             to: category)
+            CommonUtil.hideLoadingView()
+        } catch {}
     }
 }

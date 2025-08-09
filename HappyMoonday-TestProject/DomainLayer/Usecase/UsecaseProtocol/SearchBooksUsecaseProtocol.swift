@@ -12,5 +12,6 @@ protocol SearchBooksUsecaseProtocol: BaseUsecaseProtocol {
     // MARK: - LOCAL
     func saveRecentSearchKeyword(_ keyword: String) throws
     func fetchRecentKeywords() -> [String]
-//    func changeBookCategory(with category: BookCategory)
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem]
 }

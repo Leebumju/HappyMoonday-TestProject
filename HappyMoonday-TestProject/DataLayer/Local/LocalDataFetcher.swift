@@ -10,6 +10,53 @@ import Combine
 import RealmSwift
 
 final class LocalDataFetcher: LocalDataFetchable {
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to categoryName: BookCategory) throws {
+        let realm = try Realm()
+        
+        try realm.write {
+            let category = realm.objects(BookCategoryEntity.self)
+                .filter("name == %@", categoryName.rawValue)
+                .first ?? {
+                    let newCategory = BookCategoryEntity()
+                    newCategory.id = ObjectId.generate()
+                    newCategory.name = categoryName.rawValue
+                    realm.add(newCategory)
+                    return newCategory
+                }()
+            
+            if category.books.contains(where: { $0.isbn == bookEntity.isbn }) {
+                return
+            }
+            
+            let realmBook = RealmBookItem(from: bookEntity)
+            realm.add(realmBook)
+            category.books.append(realmBook)
+        }
+    }
+    
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
+        let realm = try! Realm()
+        guard let category = realm.objects(BookCategoryEntity.self)
+            .filter("name == %@", categoryName.rawValue)
+            .first else {
+            return []
+        }
+        
+        return category.books.map { realmBook in
+            Book.Entity.BookItem(
+                title: realmBook.title,
+                link: realmBook.link,
+                image: realmBook.image,
+                author: realmBook.author,
+                discount: realmBook.discount,
+                publisher: realmBook.publisher,
+                pubdate: realmBook.pubdate,
+                isbn: realmBook.isbn,
+                description: realmBook.bookDescription
+            )
+        }
+    }
+    
     func saveRecentSearchKeyword(_ keyword: String) throws {
         let realm = try Realm()
         
@@ -44,4 +91,35 @@ final class LocalDataFetcher: LocalDataFetchable {
             .prefix(5)
             .map { $0.keyword }
     }
+}
+
+final class RealmBookItem: Object {
+    @Persisted(primaryKey: true) var isbn: String = ""
+    @Persisted var title: String = ""
+    @Persisted var link: String = ""
+    @Persisted var image: String = ""
+    @Persisted var author: String = ""
+    @Persisted var discount: String = ""
+    @Persisted var publisher: String = ""
+    @Persisted var pubdate: String = ""
+    @Persisted var bookDescription: String = ""
+    
+    convenience init(from entity: Book.Entity.BookItem) {
+        self.init()
+        self.isbn = entity.isbn
+        self.title = entity.title
+        self.link = entity.link
+        self.image = entity.image
+        self.author = entity.author
+        self.discount = entity.discount
+        self.publisher = entity.publisher
+        self.pubdate = entity.pubdate
+        self.bookDescription = entity.description
+    }
+}
+
+final class BookCategoryEntity: Object {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var name: String = ""
+    @Persisted var books = List<RealmBookItem>()
 }

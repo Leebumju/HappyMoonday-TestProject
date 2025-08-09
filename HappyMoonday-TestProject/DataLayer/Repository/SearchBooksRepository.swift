@@ -29,4 +29,12 @@ extension SearchBooksRepository: SearchBooksRepositoryProtocol {
     func fetchRecentSearchKeywords() -> [String] {
         return localDataFetcher.fetchRecentSearchKeywords()
     }
+    
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
+        try localDataFetcher.changeBookCategory(bookEntity, to: category)
+    }
+    
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
+        return localDataFetcher.fetchBooks(in: categoryName)
+    }
 }

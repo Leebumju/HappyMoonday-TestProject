@@ -41,14 +41,18 @@ extension SearchBooksUsecase: SearchBooksUsecaseProtocol {
          repository.fetchRecentSearchKeywords()
      }
     
-//    func changeBookCategory(with category: BookCategory) throws {
-//        do {
-//            try repository.changeBookCategory(keyword)
-//        } catch {
-//            errorSubject.send(error)
-//            throw error
-//        }
-//    }
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
+        do {
+            try repository.changeBookCategory(bookEntity, to: category)
+        } catch {
+            errorSubject.send(error)
+            throw error
+        }
+    }
+    
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
+        return repository.fetchBooks(in: categoryName)
+    }
     
     func getErrorSubject() -> AnyPublisher<Error, Never> {
         return errorSubject.eraseToAnyPublisher()
