@@ -6,5 +6,10 @@
 //
 
 protocol SearchBooksRepositoryProtocol: AnyObject {
+    // MARK: - Remote
     func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity
+    
+    // MARK: - Local
+    func saveRecentSearchKeyword(_ keyword: String) throws
+    func fetchRecentSearchKeywords() -> [String]
 }

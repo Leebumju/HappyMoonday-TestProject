@@ -22,6 +22,14 @@ final class SearchBooksMainViewModel: BaseViewModel {
         return searchedBooksSubject.eraseToAnyPublisher()
     }
     
+    private let recentKeywordSubject = CurrentValueSubject<[String], Never>([])
+//    var recentKeyword: [String] {
+//        return recentKeywordSubject.value
+//    }
+    var recentKeywordPublisher: AnyPublisher<[String], Never> {
+        return recentKeywordSubject.eraseToAnyPublisher()
+    }
+    
     init(usecase: SearchBooksUsecaseProtocol) {
         self.usecase = usecase
         super.init(usecase: usecase)
@@ -32,8 +40,20 @@ final class SearchBooksMainViewModel: BaseViewModel {
             searchBookRequestModel.query = keyword
             let searchedBooks = try await usecase.searchBooks(with: searchBookRequestModel)
             searchedBooksSubject.send(searchedBooks)
+            try saveRecentSearchKeyword(with: keyword)
+            fetchRecentSearchKeyword()
             print(">>>>>vm")
             print(searchedBooks)
         } catch { throw error }
+    }
+    
+    private func saveRecentSearchKeyword(with keyword: String) throws {
+        do {
+            try usecase.saveRecentSearchKeyword(keyword)
+        } catch { throw error }
+    }
+    
+    func fetchRecentSearchKeyword() {
+        recentKeywordSubject.send(usecase.fetchRecentKeywords())
     }
 }

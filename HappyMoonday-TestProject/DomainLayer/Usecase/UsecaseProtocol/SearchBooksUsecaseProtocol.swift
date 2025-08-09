@@ -7,4 +7,6 @@
 
 protocol SearchBooksUsecaseProtocol: BaseUsecaseProtocol {
     func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity
+    func saveRecentSearchKeyword(_ keyword: String) throws
+    func fetchRecentKeywords() -> [String]
 }

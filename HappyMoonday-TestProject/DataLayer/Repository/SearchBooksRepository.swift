@@ -21,4 +21,12 @@ extension SearchBooksRepository: SearchBooksRepositoryProtocol {
     func searchBooks(with requestModel: Book.Request) async throws -> Book.Entity {
         return try await remoteDataFetcher.searchBooks(with: requestModel)
     }
+    
+    func saveRecentSearchKeyword(_ keyword: String) throws {
+        try localDataFetcher.saveRecentSearchKeyword(keyword)
+    }
+    
+    func fetchRecentSearchKeywords() -> [String] {
+        return localDataFetcher.fetchRecentSearchKeywords()
+    }
 }

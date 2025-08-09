@@ -28,6 +28,19 @@ extension SearchBooksUsecase: SearchBooksUsecaseProtocol {
         }
     }
     
+    func saveRecentSearchKeyword(_ keyword: String) throws {
+        do {
+            try repository.saveRecentSearchKeyword(keyword)
+        } catch {
+            errorSubject.send(error)
+            throw error
+        }
+    }
+    
+    func fetchRecentKeywords() -> [String] {
+         repository.fetchRecentSearchKeywords()
+     }
+    
     func getErrorSubject() -> AnyPublisher<Error, Never> {
         return errorSubject.eraseToAnyPublisher()
     }

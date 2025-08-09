@@ -16,6 +16,7 @@
 		D88D51872E4639D1000329AD /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51862E4639D1000329AD /* Then */; };
 		D88D531D2E46E0E8000329AD /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D88D531C2E46E0E8000329AD /* Lottie */; };
 		D88D53382E46F440000329AD /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D88D53372E46F440000329AD /* Kingfisher */; };
+		D88D547D2E4707D5000329AD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D88D547C2E4707D5000329AD /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 				D88D51842E463981000329AD /* SnapKit in Frameworks */,
 				D88D517E2E46390A000329AD /* RxMoya in Frameworks */,
 				D88D517C2E46390A000329AD /* ReactiveMoya in Frameworks */,
+				D88D547D2E4707D5000329AD /* RealmSwift in Frameworks */,
 				D88D531D2E46E0E8000329AD /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,6 +110,7 @@
 				D88D51862E4639D1000329AD /* Then */,
 				D88D531C2E46E0E8000329AD /* Lottie */,
 				D88D53372E46F440000329AD /* Kingfisher */,
+				D88D547C2E4707D5000329AD /* RealmSwift */,
 			);
 			productName = "HappyMoonday-TestProject";
 			productReference = D8B102052E4600E800CB04DF /* HappyMoonday-TestProject.app */;
@@ -144,6 +147,7 @@
 				D88D51852E4639D1000329AD /* XCRemoteSwiftPackageReference "Then" */,
 				D88D531B2E46E0E8000329AD /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				D88D53362E46F440000329AD /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				D88D547B2E4707D5000329AD /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8B102062E4600E800CB04DF /* Products */;
@@ -421,6 +425,14 @@
 				minimumVersion = 8.5.0;
 			};
 		};
+		D88D547B2E4707D5000329AD /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -468,6 +480,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D88D53362E46F440000329AD /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		D88D547C2E4707D5000329AD /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D88D547B2E4707D5000329AD /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -94,7 +94,6 @@ class SearchBooksMainViewController: BaseViewController {
     }
     
     override func setupIfNeeded() {
-        
     }
     
     private func bind() {
@@ -111,6 +110,14 @@ class SearchBooksMainViewController: BaseViewController {
                 guard let self = self else { return }
                 searchedBookListView.reloadData()
             }.store(in: &cancelBag)
+        
+        viewModel.recentKeywordPublisher
+            .droppedSink { [weak self] keywords in
+                print(">>>>>keyword")
+                print(keywords)
+            }.store(in: &cancelBag)
+        
+        viewModel.fetchRecentSearchKeyword()
     }
     
     private func searchBooks(keyword: String) {
