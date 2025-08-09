@@ -122,8 +122,6 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         super.viewDidLoad()
         
         bind()
-        
-        print(">>>>>>1 \(viewModel.fetchBooks(in: .readDone))")
     }
     
     override func addViews() {

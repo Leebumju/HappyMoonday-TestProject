@@ -23,9 +23,6 @@ final class SearchBooksMainViewModel: BaseViewModel {
     }
     
     private let recentKeywordSubject = CurrentValueSubject<[String], Never>([])
-//    var recentKeyword: [String] {
-//        return recentKeywordSubject.value
-//    }
     var recentKeywordPublisher: AnyPublisher<[String], Never> {
         return recentKeywordSubject.eraseToAnyPublisher()
     }

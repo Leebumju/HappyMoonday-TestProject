@@ -49,11 +49,7 @@ extension SearchBooksUsecase: SearchBooksUsecaseProtocol {
             throw error
         }
     }
-    
-    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
-        return repository.fetchBooks(in: categoryName)
-    }
-    
+
     func getErrorSubject() -> AnyPublisher<Error, Never> {
         return errorSubject.eraseToAnyPublisher()
     }

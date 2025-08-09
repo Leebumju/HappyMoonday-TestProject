@@ -41,7 +41,7 @@ class SearchBooksMainViewController: BaseViewController {
     private lazy var searchedBookListView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout()).then {
         $0.showsVerticalScrollIndicator = false
         $0.dataSource = self
-        $0.registerCell(NoDataCell.self)
+        $0.registerCell(NoSearchDataCell.self)
         $0.registerCell(BookCell.self)
     }
 
@@ -219,7 +219,7 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
         guard let searchedBooks = viewModel.searchedBooks else { return .init() }
         
         if searchedBooks.items.isEmpty {
-            guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+            guard let cell = collectionView.dequeueReusableCell(NoSearchDataCell.self, indexPath: indexPath) else { return .init() }
             
             return cell
         } else {

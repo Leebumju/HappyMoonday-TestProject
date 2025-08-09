@@ -6,5 +6,5 @@
 //
 
 protocol LibraryUsecaseProtocol: BaseUsecaseProtocol {
-
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem]
 }

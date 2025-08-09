@@ -23,6 +23,7 @@ final class LibraryMainViewController: BaseViewController{
         $0.showsVerticalScrollIndicator = false
         $0.contentInsetAdjustmentBehavior = .never
         $0.registerCell(ReadingBookCell.self)
+        $0.registerCell(BookCell.self)
     }
     
     private let viewModel: LibraryMainViewModel
@@ -75,39 +76,61 @@ final class LibraryMainViewController: BaseViewController{
                                          submitText: "확인",
                                          submitCompletion: nil)
             }.store(in: &cancelBag)
+        
+        viewModel.allBooksPublisher
+            .mainSink { [weak self] _ in
+                guard let self = self else { return }
+                print(viewModel.readingBooks)
+                print(viewModel.wantToReadBooks)
+                print(viewModel.readDoneBooks)
+            }.store(in: &cancelBag)
+        
+        viewModel.fetchAllBooksCategory()
     }
     
     private func layout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout { [weak self] _, _ in
-            guard let self = self else { return nil }
-            
-            let itemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-            
-            let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(moderateScale(number: 200))
-            )
-            
-            let sectionLayout = NSCollectionLayoutSection(
-                group: NSCollectionLayoutGroup.horizontal(
-                    layoutSize: groupSize,
-                    subitems: [NSCollectionLayoutItem(layoutSize: itemSize)]
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
+            switch sectionIndex {
+            case 0:
+                guard let self = self else { return nil }
+                
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
                 )
-            )
-            
-            sectionLayout.orthogonalScrollingBehavior = .groupPagingCentered
-            
-            return sectionLayout
+                
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(moderateScale(number: 200))
+                )
+                
+                let sectionLayout = NSCollectionLayoutSection(
+                    group: NSCollectionLayoutGroup.horizontal(
+                        layoutSize: groupSize,
+                        subitems: [NSCollectionLayoutItem(layoutSize: itemSize)]
+                    )
+                )
+                
+                sectionLayout.orthogonalScrollingBehavior = .groupPagingCentered
+                
+                return sectionLayout
+            case 1, 2:
+                let itemSize: NSCollectionLayoutSize
+                itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .absolute(moderateScale(number: 200)))
+                
+                return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
+                                                                          groupLayout: .init(size: itemSize),
+                                                                          sectionLayout: .init())
+            default: return nil
+            }
         }
     }
 }
 
 extension LibraryMainViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return 3
     }
     
 //    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {

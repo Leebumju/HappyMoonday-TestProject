@@ -14,6 +14,4 @@ protocol SearchBooksRepositoryProtocol: AnyObject {
     func fetchRecentSearchKeywords() -> [String]
     
     func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws
-    
-    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem]
 }

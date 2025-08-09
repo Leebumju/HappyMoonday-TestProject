@@ -24,8 +24,4 @@ final class BookDetailViewModel: BaseViewModel {
             try usecase.changeBookCategory(bookEntity, to: category)
         } catch { throw error }
     }
-    
-    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
-        return usecase.fetchBooks(in: categoryName)
-    }
 }

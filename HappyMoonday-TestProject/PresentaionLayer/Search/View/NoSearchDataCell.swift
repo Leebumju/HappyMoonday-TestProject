@@ -9,10 +9,9 @@ import UIKit
 import SnapKit
 import Then
 
-
-final class NoDataCell: UICollectionViewCell {
+final class NoSearchDataCell: UICollectionViewCell {
     private lazy var noDataLabel: UILabel = UILabel().then {
-        $0.text = "검색 결과 없음"
+        $0.text = "검색 결과가 없어요!"
     }
     
     override init(frame: CGRect) {

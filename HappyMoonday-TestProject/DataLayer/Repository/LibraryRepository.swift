@@ -18,5 +18,7 @@ final class LibraryRepository {
 }
 
 extension LibraryRepository: LibraryRepositoryProtocol {
-    
+    func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
+        return localDataFetcher.fetchBooks(in: categoryName)
+    }
 }
