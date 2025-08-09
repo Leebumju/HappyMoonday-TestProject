@@ -27,8 +27,9 @@ final class SearchBooksMainViewModel: BaseViewModel {
         super.init(usecase: usecase)
     }
     
-    func searchBooks() async throws {
+    func searchBooks(with keyword: String) async throws {
         do {
+            searchBookRequestModel.query = keyword
             let searchedBooks = try await usecase.searchBooks(with: searchBookRequestModel)
             searchedBooksSubject.send(searchedBooks)
             print(">>>>>vm")

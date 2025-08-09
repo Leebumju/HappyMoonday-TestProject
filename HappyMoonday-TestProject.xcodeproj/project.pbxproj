@@ -15,6 +15,7 @@
 		D88D51842E463981000329AD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51832E463981000329AD /* SnapKit */; };
 		D88D51872E4639D1000329AD /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51862E4639D1000329AD /* Then */; };
 		D88D531D2E46E0E8000329AD /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D88D531C2E46E0E8000329AD /* Lottie */; };
+		D88D53382E46F440000329AD /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D88D53372E46F440000329AD /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 				D88D517A2E46390A000329AD /* Moya in Frameworks */,
 				D88D51812E46395A000329AD /* Swinject in Frameworks */,
 				D88D51782E46390A000329AD /* CombineMoya in Frameworks */,
+				D88D53382E46F440000329AD /* Kingfisher in Frameworks */,
 				D88D51872E4639D1000329AD /* Then in Frameworks */,
 				D88D51842E463981000329AD /* SnapKit in Frameworks */,
 				D88D517E2E46390A000329AD /* RxMoya in Frameworks */,
@@ -105,6 +107,7 @@
 				D88D51832E463981000329AD /* SnapKit */,
 				D88D51862E4639D1000329AD /* Then */,
 				D88D531C2E46E0E8000329AD /* Lottie */,
+				D88D53372E46F440000329AD /* Kingfisher */,
 			);
 			productName = "HappyMoonday-TestProject";
 			productReference = D8B102052E4600E800CB04DF /* HappyMoonday-TestProject.app */;
@@ -140,6 +143,7 @@
 				D88D51822E463981000329AD /* XCRemoteSwiftPackageReference "SnapKit" */,
 				D88D51852E4639D1000329AD /* XCRemoteSwiftPackageReference "Then" */,
 				D88D531B2E46E0E8000329AD /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				D88D53362E46F440000329AD /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8B102062E4600E800CB04DF /* Products */;
@@ -409,6 +413,14 @@
 				minimumVersion = 4.5.2;
 			};
 		};
+		D88D53362E46F440000329AD /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -451,6 +463,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D88D531B2E46E0E8000329AD /* XCRemoteSwiftPackageReference "lottie-spm" */;
 			productName = Lottie;
+		};
+		D88D53372E46F440000329AD /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D88D53362E46F440000329AD /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
