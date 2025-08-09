@@ -45,6 +45,7 @@ enum TabBarFlow: Flow {
     case library(LibraryScene)
     case search(SearchScene)
     case note(NoteScene)
+    case common(CommonScene)
 }
 
 enum LibraryScene: Flow {
@@ -57,4 +58,8 @@ enum SearchScene: Flow {
 
 enum NoteScene: Flow {
     case main
+}
+
+enum CommonScene: Flow {
+    case bookDetail
 }

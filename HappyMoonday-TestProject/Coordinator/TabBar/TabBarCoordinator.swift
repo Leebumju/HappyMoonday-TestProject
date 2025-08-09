@@ -15,6 +15,7 @@ final class TabBarCoordinator: NSObject, TabBarCoordinatable {
     var libraryCoordinator: AnyLibraryCoordinator = LibraryCoordinator()
     var searchCoordinator: AnySearchCoordinator = SearchCoordinator()
     var noteCoordinator: AnyNoteCoordinator = NoteCoordinator()
+    var commonCoordinator: AnyCommonCoordinator = CommonCoordinator()
     
     func start() -> UIViewController {
         let libraryVC = configureTabBarVCs(of: .library)
@@ -45,6 +46,8 @@ final class TabBarCoordinator: NSObject, TabBarCoordinatable {
         libraryCoordinator.currentFlowManager = currentFlowManager
         searchCoordinator.currentFlowManager = currentFlowManager
         noteCoordinator.currentFlowManager = currentFlowManager
+        commonCoordinator.parentCoordinator = self
+        commonCoordinator.currentFlowManager = currentFlowManager
         
         return rootViewController
     }
@@ -57,6 +60,8 @@ final class TabBarCoordinator: NSObject, TabBarCoordinatable {
             startSearchFlow(searchScene, userData: userData)
         case .note(let noteScene):
             startNoteFlow(noteScene, userData: userData)
+        case .common(let commonScene):
+            startCommonFlow(commonScene, userData: userData)
         }
     }
     
@@ -76,6 +81,10 @@ final class TabBarCoordinator: NSObject, TabBarCoordinatable {
         currentFlowManager?.currentCoordinator = noteCoordinator
         (rootViewController as? UITabBarController)?.selectedIndex = TabType.note.rawValue
         noteCoordinator.moveToAnotherFlow(flow, userData: userData)
+    }
+    
+    private func startCommonFlow(_ flow: Flow, userData: [String: Any]?) {
+        commonCoordinator.moveToAnotherFlow(flow, userData: userData)
     }
     
     private func configureTabBarVCs(of tabType: TabType) -> UIViewController {

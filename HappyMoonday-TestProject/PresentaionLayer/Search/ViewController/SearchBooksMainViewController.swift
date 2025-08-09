@@ -75,7 +75,7 @@ class SearchBooksMainViewController: BaseViewController {
         let tabBarHeight: CGFloat = tabBarController?.tabBar.bounds.height ?? moderateScale(number: 48) + getSafeAreaBottom()
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(getSafeAreaTop()).offset(moderateScale(number: 100))
+            $0.top.equalToSuperview().offset(getSafeAreaTop() + moderateScale(number: 24))
             $0.leading.trailing.equalToSuperview()
         }
         
@@ -227,6 +227,9 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
             
             let book: Book.Entity.BookItem = searchedBooks.items[indexPath.item]
             cell.updateView(with: book)
+            cell.containerView.didTapped { [weak self] in
+                self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail), userData: nil)
+            }
             
             return cell
         }
