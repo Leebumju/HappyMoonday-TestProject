@@ -15,4 +15,8 @@ final class AddBookInfoViewModel: BaseViewModel {
         self.usecase = usecase
         super.init(usecase: usecase)
     }
+    
+    func addBookInfo(title: String, author: String, description: String) {
+        
+    }
 }

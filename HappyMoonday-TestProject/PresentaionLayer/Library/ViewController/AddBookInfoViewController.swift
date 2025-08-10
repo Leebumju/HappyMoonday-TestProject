@@ -25,6 +25,14 @@ final class AddBookInfoViewController: BaseNavigationViewController {
         $0.spacing = moderateScale(number: 12)
     }
     
+    private lazy var categoryTitleLabel: UILabel = UILabel().then {
+        $0.attributedText = FontManager.body4M.setFont("카테고리 선택",
+                                                       alignment: .left)
+        $0.textColor = .black
+    }
+    
+    private lazy var categorySelectableView: SelectableView = SelectableView(selectableType: .bookCategory)
+    
     private lazy var bookTitleTextFieldView: BookInfoTextFieldView = BookInfoTextFieldView(textFieldType: .bookTitle).then {
         $0.delegate = self
     }
@@ -74,10 +82,14 @@ final class AddBookInfoViewController: BaseNavigationViewController {
         view.addSubviews([scrollView, saveButton])
         scrollView.addSubview(containerView)
         containerView.addSubviews([containerStackView])
-        containerStackView.addArrangedSubviews([bookTitleTextFieldView,
+        containerStackView.addArrangedSubviews([categoryTitleLabel,
+                                                categorySelectableView,
+                                                bookTitleTextFieldView,
                                                 authorTextFieldView,
                                                 descriptionTitleLabel,
                                                 descriptionTextView])
+        containerStackView.setCustomSpacing(moderateScale(number: 4),
+                                            after: categoryTitleLabel)
         containerStackView.setCustomSpacing(moderateScale(number: 4),
                                             after: descriptionTitleLabel)
     }
@@ -98,6 +110,10 @@ final class AddBookInfoViewController: BaseNavigationViewController {
             $0.top.equalToSuperview().offset(moderateScale(number: 10))
             $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
             $0.bottom.equalToSuperview()
+        }
+        
+        categorySelectableView.snp.makeConstraints {
+            $0.height.equalTo(moderateScale(number: 56))
         }
         
         descriptionTextView.snp.makeConstraints {
