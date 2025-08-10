@@ -13,6 +13,8 @@ class SearchBooksMainViewController: BaseViewController {
     private var cancelBag = Set<AnyCancellable>()
     var coordinator: AnySearchCoordinator?
     
+    private var storedKeyword: String = ""
+    
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.attributedText = FontManager.title2SB.setFont("도서 검색",
                                                          alignment: .center)
@@ -26,7 +28,8 @@ class SearchBooksMainViewController: BaseViewController {
         $0.textColor = .black
         $0.delegate = self
         $0.setCustomPlaceholder(placeholder: "책을 검색해 주세요",
-                                color: .systemGray3)
+                                color: .systemGray3,
+                                font: FontManager.body2M.font)
         $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
     
@@ -40,6 +43,7 @@ class SearchBooksMainViewController: BaseViewController {
     private lazy var searchedBookListView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout()).then {
         $0.showsVerticalScrollIndicator = false
         $0.dataSource = self
+        $0.delegate = self
         $0.registerCell(NoSearchDataCell.self)
         $0.registerCell(BookCell.self)
     }
@@ -154,6 +158,7 @@ class SearchBooksMainViewController: BaseViewController {
                 CommonUtil.showLoadingView()
                 try await viewModel.searchBooks(with: keyword)
                 CommonUtil.hideLoadingView()
+                self.storedKeyword = keyword
             } catch {}
         }
     }
@@ -181,7 +186,6 @@ class SearchBooksMainViewController: BaseViewController {
     private func textFieldDidChange(_ sender: UITextField) {
         guard let searchedText = sender.text else { return }
         
-//        searchBooks(keyword: searchedText)
     }
     
     @objc
@@ -234,5 +238,15 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
             return cell
         }
     }
-    
 }
+
+extension SearchBooksMainViewController: UICollectionViewDelegate {
+//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//       
+//        
+//        if indexPath.item >= total - 3 {
+//            searchBooks(keyword: storedKeyword)
+//        }
+//    }
+}
+

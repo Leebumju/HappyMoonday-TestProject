@@ -26,9 +26,10 @@ extension UITextField {
         self.rightViewMode = .always
     }
     
-    func setCustomPlaceholder(placeholder: String?, color: UIColor?) {
+    func setCustomPlaceholder(placeholder: String?, color: UIColor?, font: UIFont?) {
         guard let placeholder = placeholder else { return }
         self.attributedPlaceholder = NSAttributedString(string: placeholder,
-                                                        attributes: [.foregroundColor: color])
+                                                        attributes: [.foregroundColor: color,
+                                                                     .font: font])
     }
 }

@@ -39,8 +39,6 @@ final class SearchBooksMainViewModel: BaseViewModel {
             searchedBooksSubject.send(searchedBooks)
             try saveRecentSearchKeyword(with: keyword)
             fetchRecentSearchKeyword()
-            print(">>>>>vm")
-            print(searchedBooks)
         } catch { throw error }
     }
     

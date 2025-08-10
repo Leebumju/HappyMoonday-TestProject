@@ -10,13 +10,18 @@ import SnapKit
 import Then
 import Combine
 
-final class LibraryMainViewController: BaseViewController{
+final class LibraryMainViewController: BaseViewController {
     private var cancelBag = Set<AnyCancellable>()
     var coordinator: AnyLibraryCoordinator?
     
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.attributedText = FontManager.title2SB.setFont("책 보관함",
                                                          alignment: .center)
+    }
+    
+    private lazy var addBookInfoButton: TouchableImageView = TouchableImageView(frame: .zero).then {
+        $0.image = UIImage(systemName: "plus")?.withTintColor(.systemGray3,
+                                                              renderingMode: .alwaysOriginal)
     }
     
     private lazy var bookListView = UICollectionView(frame: .zero, collectionViewLayout: layout()).then {
@@ -51,6 +56,7 @@ final class LibraryMainViewController: BaseViewController{
     
     override func addViews() {
         view.addSubviews([titleLabel,
+                          addBookInfoButton,
                           bookListView])
     }
     
@@ -62,6 +68,12 @@ final class LibraryMainViewController: BaseViewController{
             $0.leading.trailing.equalToSuperview()
         }
         
+        addBookInfoButton.snp.makeConstraints {
+            $0.size.equalTo(moderateScale(number: 24))
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
+        }
+        
         bookListView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(moderateScale(number: 10))
             $0.leading.trailing.equalToSuperview()
@@ -71,6 +83,11 @@ final class LibraryMainViewController: BaseViewController{
     
     override func setupIfNeeded() {
         setupNotifications()
+        
+        addBookInfoButton.didTapped { [weak self] in
+            self?.coordinator?.moveTo(.addBookInfo,
+                                      userData: nil)
+        }
     }
     
     override func deinitialize() {

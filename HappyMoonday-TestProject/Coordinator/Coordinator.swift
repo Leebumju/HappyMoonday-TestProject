@@ -50,6 +50,7 @@ enum TabBarFlow: Flow {
 
 enum LibraryScene: Flow {
     case main
+    case addBookInfo
 }
 
 enum SearchScene: Flow {

@@ -28,7 +28,16 @@ final class LibraryCoordinator: NSObject, LibraryCoordinatable {
             switch appFlow {
             case .main:
                 self.rootNavigationController?.popToRootViewController(animated: true)
+            case .addBookInfo:
+                self.moveToAddBookInfoScene(userData)
             }
         }
+    }
+    
+    private func moveToAddBookInfoScene(_ userData: [String: Any]?) {
+        let viewModel: AddBookInfoViewModel = AddBookInfoViewModel(usecase: Injector.shared.resolve(LibraryUsecaseProtocol.self)!)
+        let addBookInfoVC = AddBookInfoViewController(viewModel: viewModel)
+        addBookInfoVC.coordinator = self
+        currentNavigationViewController?.pushViewController(addBookInfoVC, animated: true)
     }
 }
