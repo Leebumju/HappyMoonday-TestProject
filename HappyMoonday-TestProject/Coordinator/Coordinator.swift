@@ -59,6 +59,7 @@ enum SearchScene: Flow {
 
 enum NoteScene: Flow {
     case main
+    case noteBook
 }
 
 enum CommonScene: Flow {

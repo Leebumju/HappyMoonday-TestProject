@@ -21,8 +21,8 @@ final class NoteCoordinator: NSObject, NoteCoordinatable {
 ////        noteVC.coordinator = self
 //        rootViewController = UINavigationController(rootViewController: noteVC)
 //        return rootViewController
-        let noteVC = UIHostingController(rootView: NoteMainView())
-        rootViewController = UINavigationController(rootViewController: noteVC)
+        let noteMainVC = UIHostingController(rootView: NoteMainView())
+        rootViewController = UINavigationController(rootViewController: noteMainVC)
         
         return rootViewController
     }
@@ -32,7 +32,14 @@ final class NoteCoordinator: NSObject, NoteCoordinatable {
             switch appFlow {
             case .main:
                 self.rootNavigationController?.popToRootViewController(animated: true)
+            case .noteBook:
+                self.moveToNoteBookScene(userData: userData)
             }
         }
+    }
+    
+    func moveToNoteBookScene(userData: [String : Any]?) {
+        let noteBookVC = UIHostingController(rootView: NoteBookView(coordinator: self))
+        currentNavigationViewController?.pushViewController(noteBookVC, animated: true)
     }
 }
