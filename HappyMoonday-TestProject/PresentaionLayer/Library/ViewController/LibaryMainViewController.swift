@@ -369,10 +369,13 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 let readDoneBooks = viewModel.readDoneBooks
                 guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
                 
-                cell.updateView(with: readDoneBooks[indexPath.item])
+                cell.updateView(with: readDoneBooks[indexPath.item], isReadDone: true)
                 cell.containerView.didTapped { [weak self] in
                     self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail),
                                                          userData: ["bookInfo": readDoneBooks[indexPath.item]])
+                }
+                cell.reportButton.didTapped { [weak self] in
+                    print(">>>기록 화면으로 이동")
                 }
                 return cell
             }

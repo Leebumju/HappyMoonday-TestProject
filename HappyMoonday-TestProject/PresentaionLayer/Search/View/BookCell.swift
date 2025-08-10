@@ -18,6 +18,12 @@ final class BookCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
+    private(set) lazy var reportButton: TouchableImageView = TouchableImageView(frame: .zero).then {
+        $0.image = UIImage(systemName: "pencil")?.withTintColor(.systemGray,
+                                                                renderingMode: .alwaysOriginal)
+        $0.contentMode = .scaleAspectFit
+    }
+    
     private lazy var containerStackView: UIStackView = UIStackView().then {
         $0.axis = .vertical
         $0.alignment = .center
@@ -68,6 +74,7 @@ final class BookCell: UICollectionViewCell {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
+                                   reportButton,
                                    containerStackView,
                                    dividerView])
         containerStackView.addArrangedSubviews([titleStackView,
@@ -79,6 +86,12 @@ final class BookCell: UICollectionViewCell {
     private func makeConstraints() {
         containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+        }
+        
+        reportButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(moderateScale(number: 16))
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
+            $0.size.equalTo(moderateScale(number: 24))
         }
         
         bookImageView.snp.makeConstraints {
@@ -100,7 +113,7 @@ final class BookCell: UICollectionViewCell {
         }
     }
     
-    func updateView(with book: Book.Entity.BookItem) {
+    func updateView(with book: Book.Entity.BookItem, isReadDone: Bool = false) {
         bookImageView.setImageWithSpinner(
             urlString: book.image,
             placeholder: UIImage(systemName: "photo")
@@ -108,5 +121,6 @@ final class BookCell: UICollectionViewCell {
         titleLabel.text = book.title
         authorLabel.text = book.author
         descriptionLabel.text = book.description
+        reportButton.isHidden = !isReadDone
     }
 }
