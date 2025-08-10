@@ -24,6 +24,7 @@ final class LibraryMainViewController: BaseViewController{
         $0.showsVerticalScrollIndicator = false
         $0.contentInsetAdjustmentBehavior = .never
         $0.registerCell(ReadingBookCell.self)
+        $0.registerCell(WantToReedBookCell.self)
         $0.registerCell(BookCell.self)
         $0.registerCell(NoDataCell.self)
         $0.registerSupplimentaryView(ReadingBookHeaderView.self, supplementaryViewOfKind: .header)
@@ -99,10 +100,9 @@ final class LibraryMainViewController: BaseViewController{
     
     private func layout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
+            guard let self = self else { return nil }
             switch sectionIndex {
             case 0:
-                guard let self = self else { return nil }
-                
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
                     heightDimension: .fractionalHeight(1.0)
@@ -135,7 +135,62 @@ final class LibraryMainViewController: BaseViewController{
                 sectionLayout.orthogonalScrollingBehavior = .groupPagingCentered
                 
                 return sectionLayout
-            case 1, 2:
+            case 1:
+                if self.viewModel.wantToReadBooks.isEmpty {
+                    let itemSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                                                  heightDimension: .absolute(moderateScale(number: 200)))
+                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                            heightDimension: .estimated(moderateScale(number: 46)))
+                    return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
+                                                                              groupLayout: .init(size: itemSize),
+                                                                              sectionLayout: .init(headerSize: headerSize))
+                } else {
+                    let sideInset = moderateScale(number: 20)
+                    let interItemSpacing = moderateScale(number: 20)
+                    let screenWidth = UIScreen.main.bounds.width
+                    let itemWidth = (screenWidth - sideInset * 2 - interItemSpacing) / 2
+
+                    let itemSize = NSCollectionLayoutSize(
+                        widthDimension: .absolute(floor(itemWidth)),
+                        heightDimension: .absolute(moderateScale(number: 200))
+                    )
+                    let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                    
+                    let groupSize = NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .absolute(moderateScale(number: 200))
+                    )
+
+                    let group = NSCollectionLayoutGroup.horizontal(
+                        layoutSize: groupSize,
+                        subitem: item,
+                        count: 2
+                    )
+
+                    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sideInset, bottom: 0, trailing: sideInset)
+                    group.interItemSpacing = .fixed(interItemSpacing)
+
+                    let section = NSCollectionLayoutSection(group: group)
+
+                    section.interGroupSpacing = moderateScale(number: 20)
+                    section.contentInsets = .zero
+
+                    let headerSize = NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .estimated(moderateScale(number: 46))
+                    )
+
+                    let header = NSCollectionLayoutBoundarySupplementaryItem(
+                        layoutSize: headerSize,
+                        elementKind: UICollectionView.elementKindSectionHeader,
+                        alignment: .top
+                    )
+                    section.contentInsets.bottom = moderateScale(number: 20)
+                    section.boundarySupplementaryItems = [header]
+
+                    return section
+                }
+            case 2:
                 let itemSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                                               heightDimension: .absolute(moderateScale(number: 200)))
                 let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -146,6 +201,31 @@ final class LibraryMainViewController: BaseViewController{
             default: return nil
             }
         }
+    }
+    
+    private func generateMainCountryListLayout(showFullList: Bool) -> NSCollectionLayoutSection {
+        let width: CGFloat = (UIScreen.main.bounds.width - moderateScale(number: 56)) / 3
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(floor(width)),
+                                              heightDimension: .absolute(moderateScale(number: 93)))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                               heightDimension: .absolute(moderateScale(number: 93)))
+        var footerSize: NSCollectionLayoutSize?
+        
+        if !showFullList {
+            footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                heightDimension: .absolute(moderateScale(number: 48)))
+        }
+        
+        return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
+                                                                  groupLayout: .init(size: groupSize,
+                                                                                     interItemSpacing: .fixed(moderateScale(number: 8))),
+                                                                  sectionLayout: .init(contentInsets: .init(top: 0,
+                                                                                                            leading: moderateScale(number: 20),
+                                                                                                            bottom: moderateScale(number: 12),
+                                                                                                            trailing: moderateScale(number: 20)),
+                                                                                       interGroupSpacing: moderateScale(number: 8),
+                                                                                       footerSize: footerSize),
+                                                                  isVertical: false)
     }
     
     private func setupNotifications() {
@@ -243,9 +323,12 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 cell.updateView(with: .wantToRead)
                 return cell
             } else {
-                guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
+                guard let cell = collectionView.dequeueReusableCell(WantToReedBookCell.self, indexPath: indexPath) else { return .init() }
                 
                 cell.updateView(with: viewModel.wantToReadBooks[indexPath.item])
+                cell.containerView.didTapped {
+                    
+                }
                 return cell
             }
         case 2:
