@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class NoteCoordinator: NSObject, NoteCoordinatable {
     
@@ -15,9 +16,14 @@ final class NoteCoordinator: NSObject, NoteCoordinatable {
     var rootViewController: UIViewController = UIViewController()
     
     func start() -> UIViewController {
-        let noteVC = NoteMainViewController()
-//        noteVC.coordinator = self
+        // TODO: - UIKit 변경시 주석 제거
+//        let noteVC = NoteMainViewController()
+////        noteVC.coordinator = self
+//        rootViewController = UINavigationController(rootViewController: noteVC)
+//        return rootViewController
+        let noteVC = UIHostingController(rootView: NoteMainView())
         rootViewController = UINavigationController(rootViewController: noteVC)
+        
         return rootViewController
     }
     

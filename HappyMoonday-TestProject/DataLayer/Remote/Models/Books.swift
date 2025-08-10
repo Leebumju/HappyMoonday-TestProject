@@ -81,3 +81,7 @@ enum Book {
         }
     }
 }
+
+extension Book.Entity.BookItem: Identifiable {
+    var id: String { isbn }
+}
