@@ -42,7 +42,7 @@ class SearchBooksMainViewController: BaseViewController {
         $0.showsVerticalScrollIndicator = false
         $0.dataSource = self
         $0.registerCell(NoSearchDataCell.self)
-        $0.registerCell(SearchedBookCell.self)
+        $0.registerCell(BookCell.self)
     }
 
     private let viewModel: SearchBooksMainViewModel
@@ -223,7 +223,7 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
             
             return cell
         } else {
-            guard let cell = collectionView.dequeueReusableCell(SearchedBookCell.self, indexPath: indexPath) else { return .init() }
+            guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
             
             let book: Book.Entity.BookItem = searchedBooks.items[indexPath.item]
             cell.updateView(with: book)

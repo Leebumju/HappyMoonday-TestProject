@@ -1,13 +1,9 @@
 //
-//  Untitled.swift
+//  BookCell.swift
 //  HappyMoonday-TestProject
 //
 //  Created by 이범준 on 8/9/25.
 //
-
-//case reading
-//case wantToRead
-//case readDone
 
 import UIKit
 import Then
@@ -15,12 +11,7 @@ import SnapKit
 
 final class BookCell: UICollectionViewCell {
     private(set) lazy var containerView: TouchableView = TouchableView().then {
-        $0.backgroundColor = UIColor(
-            red: .random(in: 0.5...1),
-            green: .random(in: 0.5...1),
-            blue: .random(in: 0.5...1),
-            alpha: 1.0
-        )
+        $0.backgroundColor = .white
     }
     
     private lazy var bookImageView: UIImageView = UIImageView().then {
@@ -32,7 +23,7 @@ final class BookCell: UICollectionViewCell {
         $0.alignment = .center
         $0.spacing = moderateScale(number: 6)
     }
-    
+
     private lazy var titleStackView: UIStackView = UIStackView().then {
         $0.spacing = moderateScale(number: 4)
         $0.alignment = .leading
@@ -60,6 +51,10 @@ final class BookCell: UICollectionViewCell {
         $0.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
     
+    private lazy var dividerView: UIView = UIView().then {
+        $0.backgroundColor = .systemGray6
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
@@ -73,7 +68,8 @@ final class BookCell: UICollectionViewCell {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
-                                   containerStackView])
+                                   containerStackView,
+                                   dividerView])
         containerStackView.addArrangedSubviews([titleStackView,
                                                 descriptionLabel])
         titleStackView.addArrangedSubviews([titleLabel,
@@ -87,15 +83,20 @@ final class BookCell: UICollectionViewCell {
         
         bookImageView.snp.makeConstraints {
             $0.width.equalTo(moderateScale(number: 100))
-            $0.trailing.equalToSuperview().inset(moderateScale(number: 30))
+            $0.leading.equalToSuperview().inset(moderateScale(number: 30))
             $0.top.bottom.equalToSuperview().inset(moderateScale(number: 25))
         }
         
         containerStackView.snp.makeConstraints {
             $0.top.equalTo(bookImageView).offset(moderateScale(number: 20))
-            $0.leading.equalToSuperview().offset(moderateScale(number: 30))
-            $0.trailing.equalTo(bookImageView.snp.leading).offset(moderateScale(number: -16))
+            $0.leading.equalTo(bookImageView.snp.trailing).offset(moderateScale(number: 16))
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -30))
             $0.bottom.equalTo(bookImageView).offset(moderateScale(number: -20))
+        }
+        
+        dividerView.snp.makeConstraints {
+            $0.height.equalTo(moderateScale(number: 2))
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     

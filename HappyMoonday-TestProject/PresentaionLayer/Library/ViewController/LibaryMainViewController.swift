@@ -23,7 +23,7 @@ final class LibraryMainViewController: BaseViewController{
         $0.dataSource = self
         $0.showsVerticalScrollIndicator = false
         $0.contentInsetAdjustmentBehavior = .never
-        $0.registerCell(BookCell.self)
+        $0.registerCell(ReadingBookCell.self)
         $0.registerCell(WantToReedBookCell.self)
         $0.registerCell(BookCell.self)
         $0.registerCell(NoDataCell.self)
@@ -308,7 +308,7 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 cell.updateView(with: .reading)
                 return cell
             } else {
-                guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
+                guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
                 
                 cell.updateView(with: viewModel.readingBooks[indexPath.item])
                 return cell
