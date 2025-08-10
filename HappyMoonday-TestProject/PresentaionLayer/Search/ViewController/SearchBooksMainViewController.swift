@@ -14,9 +14,8 @@ class SearchBooksMainViewController: BaseViewController {
     var coordinator: AnySearchCoordinator?
     
     private lazy var titleLabel: UILabel = UILabel().then {
-        $0.text = "검색탭"
-        $0.textColor = .black
-        $0.textAlignment = .center
+        $0.attributedText = FontManager.title2SB.setFont("도서 검색",
+                                                         alignment: .center)
     }
     
     private lazy var searchTextField: UITextField = UITextField().then {
@@ -125,19 +124,20 @@ class SearchBooksMainViewController: BaseViewController {
         viewModel.recentKeywordPublisher
             .droppedSink { [weak self] keywords in
                 guard let self = self else { return }
-                print(">>>>>keyword")
-                print(keywords)
                 var searchKeywordViews: [UIView] = []
                 for keyword in keywords {
                     let keywordView: PaddedView = PaddedView(vertical: 3, horizontal: 8).then {
-                        $0.titleLabel.text = keyword
-                        $0.titleLabel.textColor = .systemGray3
-                        $0.titleLabel.textAlignment = .center
-                        $0.backgroundColor = .systemGray6
+                        $0.titleLabel.textColor = .systemGray
+                        $0.titleLabel.attributedText = FontManager.body4M.setFont(keyword,
+                                                                                  alignment: .center)
+                        $0.backgroundColor = .systemGray5
                         $0.layer.masksToBounds = true
                         $0.layer.cornerRadius = moderateScale(number: 10)
                     }
-                    
+                    keywordView.didTapped { [weak self] in
+                        self?.searchTextField.text = keyword
+                        self?.searchBooks(keyword: keyword)
+                    }
                     searchKeywordViews.append(keywordView)
                 }
                 
