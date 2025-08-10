@@ -1,27 +1,17 @@
 //
-//  Untitled.swift
+//  BookCell.swift
 //  HappyMoonday-TestProject
 //
 //  Created by 이범준 on 8/9/25.
 //
 
-//case reading
-//case wantToRead
-//case readDone
-
 import UIKit
 import Then
 import SnapKit
 
-final class ReadingBookCell: UICollectionViewCell {
-    
+final class SearchedBookCell: UICollectionViewCell {
     private(set) lazy var containerView: TouchableView = TouchableView().then {
-        $0.backgroundColor = UIColor(
-            red: .random(in: 0.5...1),
-            green: .random(in: 0.5...1),
-            blue: .random(in: 0.5...1),
-            alpha: 1.0
-        )
+        $0.backgroundColor = .white
     }
     
     private lazy var bookImageView: UIImageView = UIImageView().then {
@@ -33,14 +23,18 @@ final class ReadingBookCell: UICollectionViewCell {
         $0.alignment = .center
         $0.spacing = moderateScale(number: 6)
     }
-    
+
     private lazy var titleStackView: UIStackView = UIStackView().then {
         $0.spacing = moderateScale(number: 4)
+        $0.alignment = .leading
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.textColor = .black
         $0.attributedText = FontManager.body2B.setFont(alignment: .left)
+        $0.numberOfLines = 0
     }
     
     private lazy var authorLabel: UILabel = UILabel().then {
@@ -53,6 +47,12 @@ final class ReadingBookCell: UICollectionViewCell {
         $0.attributedText = FontManager.body3M.setFont(alignment: .left)
         $0.numberOfLines = 0
         $0.lineBreakMode = .byTruncatingTail
+        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
+        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
+    }
+    
+    private lazy var dividerView: UIView = UIView().then {
+        $0.backgroundColor = .systemGray6
     }
     
     override init(frame: CGRect) {
@@ -68,7 +68,8 @@ final class ReadingBookCell: UICollectionViewCell {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
-                                   containerStackView])
+                                   containerStackView,
+                                   dividerView])
         containerStackView.addArrangedSubviews([titleStackView,
                                                 descriptionLabel])
         titleStackView.addArrangedSubviews([titleLabel,
@@ -87,10 +88,15 @@ final class ReadingBookCell: UICollectionViewCell {
         }
         
         containerStackView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.top.equalTo(bookImageView).offset(moderateScale(number: 20))
             $0.leading.equalToSuperview().offset(moderateScale(number: 30))
             $0.trailing.equalTo(bookImageView.snp.leading).offset(moderateScale(number: -16))
-            $0.height.equalTo(bookImageView).offset(moderateScale(number: -40))
+            $0.bottom.equalTo(bookImageView).offset(moderateScale(number: -20))
+        }
+        
+        dividerView.snp.makeConstraints {
+            $0.height.equalTo(moderateScale(number: 2))
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
