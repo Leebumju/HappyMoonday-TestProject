@@ -83,14 +83,14 @@ final class ReadingBookCell: UICollectionViewCell {
         bookImageView.snp.makeConstraints {
             $0.width.equalTo(moderateScale(number: 100))
             $0.trailing.equalToSuperview().inset(moderateScale(number: 30))
-            $0.top.bottom.equalToSuperview().inset(moderateScale(number: 20))
+            $0.top.bottom.equalToSuperview().inset(moderateScale(number: 25))
         }
         
         containerStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(moderateScale(number: 16))
+            $0.leading.equalToSuperview().offset(moderateScale(number: 30))
             $0.trailing.equalTo(bookImageView.snp.leading).offset(moderateScale(number: -16))
-            $0.height.equalTo(bookImageView)
+            $0.height.equalTo(bookImageView).offset(moderateScale(number: -40))
         }
     }
     
