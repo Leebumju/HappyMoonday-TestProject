@@ -19,10 +19,18 @@ final class CommonCoordinator: CommonCoordinatable {
     func moveTo(_ appFlow: CommonScene, userData: [String: Any]?) {
         DispatchMain.async {
             switch appFlow {
+            case .web:
+                self.moveToWebScene(userData)
             case .bookDetail:
                 self.moveToBookDetailScene(userData)
             }
         }
+    }
+    
+    private func moveToWebScene(_ userData: [String: Any]?) {
+        guard let urlRequest = userData?["urlRequest"] as? URLRequest else { return }
+        let webVC: BaseWebViewController = BaseWebViewController(urlRequest: urlRequest)
+        currentNavigationViewController?.pushViewController(webVC, animated: true)
     }
     
     private func moveToBookDetailScene(_ userData: [String: Any]?) {

@@ -63,7 +63,7 @@ final class LibraryMainViewController: BaseViewController{
         }
         
         bookListView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(moderateScale(number: 20))
+            $0.top.equalTo(titleLabel.snp.bottom).offset(moderateScale(number: 10))
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview().offset(moderateScale(number: -tabBarHeight))
         }
@@ -314,7 +314,8 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 return cell
             }
         case 1:
-            if viewModel.wantToReadBooks.isEmpty {
+            let wantToReadBooks = viewModel.wantToReadBooks
+            if wantToReadBooks.isEmpty {
                 guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
                 cell.containerStackView.didTapped { [weak self] in
                     self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
@@ -325,9 +326,11 @@ extension LibraryMainViewController: UICollectionViewDataSource {
             } else {
                 guard let cell = collectionView.dequeueReusableCell(WantToReedBookCell.self, indexPath: indexPath) else { return .init() }
                 
-                cell.updateView(with: viewModel.wantToReadBooks[indexPath.item])
-                cell.containerView.didTapped {
-                    
+                cell.updateView(with: wantToReadBooks[indexPath.item])
+                cell.containerView.didTapped { [weak self] in
+                    guard let url = URL(string: wantToReadBooks[indexPath.item].link) else { return }
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.web),
+                                                         userData: ["urlRequest": URLRequest(url: url)])
                 }
                 return cell
             }
