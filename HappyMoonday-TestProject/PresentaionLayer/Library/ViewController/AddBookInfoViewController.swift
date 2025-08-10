@@ -132,6 +132,14 @@ final class AddBookInfoViewController: BaseNavigationViewController {
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
         scrollView.addGestureRecognizer(tapGestureRecognizer)
+        
+        categorySelectableView.didTapped { [weak self] in
+            self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.singleTextBottomSheet),
+                                                 userData: ["selectableList": [SelectedCategory.reading.rawValue,
+                                                                               SelectedCategory.wantToRead.rawValue,
+                                                                               SelectedCategory.readDone.rawValue],
+                                                            "delegate": self])
+        }
     }
     
     @objc
@@ -153,5 +161,17 @@ extension AddBookInfoViewController: BookInfoTextFieldViewDelegate {
         } else {
             saveButton.setClickable(false)
         }
+    }
+}
+
+extension AddBookInfoViewController: SingleTextBottomSheetViewControllerDelegate {
+    func didSelectText(text: String) {
+        categorySelectableView.didSelectItem(with: text)
+    }
+    
+    enum SelectedCategory: String {
+        case reading = "읽고 있는 도서"
+        case wantToRead = "읽고 싶은 도서"
+        case readDone = "읽었던 도서"
     }
 }

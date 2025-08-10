@@ -23,6 +23,8 @@ final class CommonCoordinator: CommonCoordinatable {
                 self.moveToWebScene(userData)
             case .bookDetail:
                 self.moveToBookDetailScene(userData)
+            case .singleTextBottomSheet:
+                self.moveToSingleTextBottomSheetScene(userData)
             }
         }
     }
@@ -41,5 +43,17 @@ final class CommonCoordinator: CommonCoordinatable {
         let bookDetailVC = BookDetailViewController(viewModel: viewModel)
         bookDetailVC.coordinator = self
         currentNavigationViewController?.pushViewController(bookDetailVC, animated: true)
+    }
+    
+    private func moveToSingleTextBottomSheetScene(_ userData: [String: Any]?) {
+        guard let selectableList = userData?["selectableList"] as? [String],
+        let delegate = userData?["delegate"] as? SingleTextBottomSheetViewControllerDelegate else {
+            return
+        }
+        
+        let singleTextBottomSheetVC: SingleTextBottomSheetViewController = SingleTextBottomSheetViewController(selectableList: selectableList)
+        singleTextBottomSheetVC.delegate = delegate
+        singleTextBottomSheetVC.modalPresentationStyle = .overFullScreen
+        currentNavigationViewController?.present(singleTextBottomSheetVC, animated: false)
     }
 }

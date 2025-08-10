@@ -64,4 +64,5 @@ enum NoteScene: Flow {
 enum CommonScene: Flow {
     case web
     case bookDetail
+    case singleTextBottomSheet
 }

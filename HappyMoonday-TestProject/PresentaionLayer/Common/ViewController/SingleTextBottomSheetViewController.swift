@@ -21,7 +21,7 @@ final class SingleTextBottomSheetViewController: BaseBottomSheetViewController {
     }
     
     private lazy var titleLabel = UILabel().then {
-        $0.attributedText = FontManager.title2B.setFont("항목",
+        $0.attributedText = FontManager.title2B.setFont("카테고리 선택",
                                                         alignment: .left)
         $0.textColor = .black
     }
@@ -67,7 +67,7 @@ final class SingleTextBottomSheetViewController: BaseBottomSheetViewController {
         super.makeConstraints()
         
         topContainerView.snp.makeConstraints {
-            $0.top.equalTo(bottomSheetContainerView.snp.bottom).offset(moderateScale(number: 4))
+            $0.top.equalToSuperview().offset(moderateScale(number: 4))
             $0.leading.trailing.equalToSuperview()
         }
         
