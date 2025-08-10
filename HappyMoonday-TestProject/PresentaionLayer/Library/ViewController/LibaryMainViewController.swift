@@ -325,9 +325,14 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 cell.updateView(with: .reading)
                 return cell
             } else {
+                let readingBooks = viewModel.readingBooks
                 guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
                 
-                cell.updateView(with: viewModel.readingBooks[indexPath.item])
+                cell.updateView(with: readingBooks[indexPath.item])
+                cell.containerView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail),
+                                                         userData: ["bookInfo": readingBooks[indexPath.item]])
+                }
                 return cell
             }
         case 1:
@@ -361,9 +366,14 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 cell.updateView(with: .readDone)
                 return cell
             } else {
+                let readDoneBooks = viewModel.readDoneBooks
                 guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
                 
-                cell.updateView(with: viewModel.readDoneBooks[indexPath.item])
+                cell.updateView(with: readDoneBooks[indexPath.item])
+                cell.containerView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail),
+                                                         userData: ["bookInfo": readDoneBooks[indexPath.item]])
+                }
                 return cell
             }
         default:

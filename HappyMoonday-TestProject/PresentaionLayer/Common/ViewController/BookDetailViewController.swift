@@ -224,6 +224,7 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
             NotificationCenter.default.post(name: .bookCategoryIsUpdated,
                                             object: nil,
                                             userInfo: ["bookCategory": category])
+            self.showToastMessageView(title: "나의 책 보관함에 저장되었어요!")
         } catch {}
     }
 }
