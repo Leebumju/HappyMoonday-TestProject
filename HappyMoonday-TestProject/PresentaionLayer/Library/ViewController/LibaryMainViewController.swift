@@ -179,13 +179,13 @@ extension LibraryMainViewController: UICollectionViewDataSource {
             guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
                                                                                   supplementaryViewOfKind: .header,
                                                                                   indexPath: indexPath) else { return .init() }
-            favoriteBookHeaderView.updateView(with: "읽고 싶은 책 보관함")
+            favoriteBookHeaderView.updateView(with: "읽고 싶은 책")
            return favoriteBookHeaderView
         case 2:
             guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
                                                                                   supplementaryViewOfKind: .header,
                                                                                   indexPath: indexPath) else { return .init() }
-            favoriteBookHeaderView.updateView(with: "읽은 책 보관함")
+            favoriteBookHeaderView.updateView(with: "읽은 책")
            return favoriteBookHeaderView
         default:
             return UICollectionReusableView()
@@ -230,7 +230,7 @@ extension LibraryMainViewController: UICollectionViewDataSource {
             } else {
                 guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
                 
-                cell.updateView()
+                cell.updateView(with: viewModel.readingBooks[indexPath.item])
                 return cell
             }
         case 1:

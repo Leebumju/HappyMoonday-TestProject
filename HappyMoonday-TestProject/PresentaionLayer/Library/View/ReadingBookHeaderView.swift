@@ -15,7 +15,8 @@ final class ReadingBookHeaderView: UICollectionReusableView {
     }
     
     private lazy var titleLabel: UILabel = UILabel().then {
-        $0.text = "읽고 있는 책 보관함"
+        $0.attributedText = FontManager.body1SB.setFont("읽고 있는 책",
+                                                        alignment: .left)
     }
     
     override init(frame: CGRect) {

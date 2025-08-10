@@ -28,20 +28,31 @@ final class ReadingBookCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var labelStackView: UIStackView = UIStackView().then {
+    private lazy var containerStackView: UIStackView = UIStackView().then {
         $0.axis = .vertical
         $0.alignment = .center
         $0.spacing = moderateScale(number: 6)
     }
     
+    private lazy var titleStackView: UIStackView = UIStackView().then {
+        $0.spacing = moderateScale(number: 4)
+    }
+    
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.textColor = .black
-        $0.textAlignment = .center
+        $0.attributedText = FontManager.body2B.setFont(alignment: .left)
     }
     
     private lazy var authorLabel: UILabel = UILabel().then {
         $0.textColor = .systemGray
-        $0.textAlignment = .center
+        $0.attributedText = FontManager.body4M.setFont(alignment: .left)
+    }
+    
+    private lazy var descriptionLabel: UILabel = UILabel().then {
+        $0.textColor = .black
+        $0.attributedText = FontManager.body3M.setFont(alignment: .left)
+        $0.numberOfLines = 0
+        $0.lineBreakMode = .byTruncatingTail
     }
     
     override init(frame: CGRect) {
@@ -57,8 +68,10 @@ final class ReadingBookCell: UICollectionViewCell {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
-                                   labelStackView])
-        labelStackView.addArrangedSubviews([titleLabel,
+                                   containerStackView])
+        containerStackView.addArrangedSubviews([titleStackView,
+                                                descriptionLabel])
+        titleStackView.addArrangedSubviews([titleLabel,
                                             authorLabel])
     }
     
@@ -73,15 +86,21 @@ final class ReadingBookCell: UICollectionViewCell {
             $0.top.bottom.equalToSuperview().inset(moderateScale(number: 20))
         }
         
-        labelStackView.snp.makeConstraints {
+        containerStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(moderateScale(number: 16))
             $0.trailing.equalTo(bookImageView.snp.leading).offset(moderateScale(number: -16))
+            $0.height.equalTo(bookImageView)
         }
     }
     
-    func updateView() {
-        titleLabel.text = "제목"
-        authorLabel.text = "저자"
+    func updateView(with book: Book.Entity.BookItem) {
+        bookImageView.setImageWithSpinner(
+            urlString: book.image,
+            placeholder: UIImage(systemName: "photo")
+        )
+        titleLabel.text = book.title
+        authorLabel.text = book.author
+        descriptionLabel.text = book.description
     }
 }

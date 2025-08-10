@@ -16,7 +16,9 @@ class BaseNavigationViewController: BaseViewController {
     private(set) lazy var topView: UIView = UIView()
     
     private lazy var titleLabel: UILabel = UILabel().then {
-        $0.textColor = .systemGray
+        $0.textColor = .black
+        $0.lineBreakMode = .byTruncatingTail
+        $0.attributedText = FontManager.body2SB.setFont(alignment: .left)
     }
     
     private(set) lazy var backButton = TouchableView()
@@ -62,7 +64,7 @@ class BaseNavigationViewController: BaseViewController {
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(backButton.snp.trailing).offset(moderateScale(number: 8))
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.trailing.equalToSuperview().offset(moderateScale(number: 20))
         }
         
         backImageView.snp.makeConstraints {

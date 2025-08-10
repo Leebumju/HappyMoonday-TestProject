@@ -14,10 +14,12 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
         $0.backgroundColor = .white
     }
     
-    private lazy var titleLabel: UILabel = UILabel()
+    private lazy var titleLabel: UILabel = UILabel().then {
+        $0.attributedText = FontManager.body1SB.setFont(alignment: .left)
+    }
     
     private lazy var dividerView: UIView = UIView().then {
-        $0.backgroundColor = .systemGray6
+        $0.backgroundColor = .systemGray5
     }
     
     override init(frame: CGRect) {
@@ -45,12 +47,12 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
         
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(moderateScale(number: 20))
-            $0.top.equalToSuperview().offset(moderateScale(number: 12))
-            $0.bottom.equalToSuperview().offset(moderateScale(number: -20))
+            $0.top.equalToSuperview().offset(moderateScale(number: 20))
+            $0.bottom.equalToSuperview().offset(moderateScale(number: -12))
         }
         
         dividerView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.top.equalToSuperview()
             $0.height.equalTo(moderateScale(number: 8))
         }
     }
