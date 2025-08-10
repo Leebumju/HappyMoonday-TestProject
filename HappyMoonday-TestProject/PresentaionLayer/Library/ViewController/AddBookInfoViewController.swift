@@ -10,6 +10,7 @@ import Then
 import Combine
 
 final class AddBookInfoViewController: BaseNavigationViewController {
+    private(set) var cancelBag = Set<AnyCancellable>()
     var coordinator: AnyLibraryCoordinator?
     
     private var bottomConstraint: Constraint?
@@ -74,6 +75,7 @@ final class AddBookInfoViewController: BaseNavigationViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateTitleLabel(with: "책 추가")
+        bind()
     }
     
     override func addViews() {
@@ -140,6 +142,39 @@ final class AddBookInfoViewController: BaseNavigationViewController {
                                                                                SelectedCategory.readDone.rawValue],
                                                             "delegate": self])
         }
+        
+        saveButton.didTapped { [weak self] in
+            self?.saveBookInfo()
+        }
+    }
+    
+    private func bind() {
+        viewModel.getErrorSubject()
+            .mainSink { [weak self] error in
+                CommonUtil.showAlertView(title: "error",
+                                         description: error.localizedDescription,
+                                         submitText: "확인",
+                                         submitCompletion: nil)
+            }.store(in: &cancelBag)
+    }
+    
+    func saveBookInfo() {
+        Task {
+            do {
+                CommonUtil.showLoadingView()
+                try viewModel.saveBookInfo(title: bookTitleTextFieldView.getUserData(),
+                                             author: authorTextFieldView.getUserData(),
+                                             description: descriptionTextView.text)
+                CommonUtil.hideLoadingView()
+                guard let selectedCategory = viewModel.selectedCategory else { return }
+                NotificationCenter.default.post(name: .bookCategoryIsUpdated,
+                                                object: nil,
+                                                userInfo: ["bookCategory": selectedCategory.bookCategory])
+                self.showToastMessageView(title: "책 보관함에 저장이 완료되었어요!") { [weak self] in
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            } catch {}
+        }
     }
     
     @objc
@@ -156,7 +191,7 @@ final class AddBookInfoViewController: BaseNavigationViewController {
 
 extension AddBookInfoViewController: BookInfoTextFieldViewDelegate {
     func textFieldDidChange(_ text: String) {
-        if !bookTitleTextFieldView.getUserData().isEmpty && !authorTextFieldView.getUserData().isEmpty {
+        if !bookTitleTextFieldView.getUserData().isEmpty && !authorTextFieldView.getUserData().isEmpty && !categorySelectableView.getSelectedValue().isEmpty {
             saveButton.setClickable(true)
         } else {
             saveButton.setClickable(false)
@@ -167,11 +202,6 @@ extension AddBookInfoViewController: BookInfoTextFieldViewDelegate {
 extension AddBookInfoViewController: SingleTextBottomSheetViewControllerDelegate {
     func didSelectText(text: String) {
         categorySelectableView.didSelectItem(with: text)
-    }
-    
-    enum SelectedCategory: String {
-        case reading = "읽고 있는 도서"
-        case wantToRead = "읽고 싶은 도서"
-        case readDone = "읽었던 도서"
+        viewModel.updateCategory(with: text)
     }
 }

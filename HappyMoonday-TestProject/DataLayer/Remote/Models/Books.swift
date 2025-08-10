@@ -36,6 +36,30 @@ enum Book {
             let pubdate: String
             let isbn: String
             let description: String
+            
+            init(title: String, link: String, image: String, author: String, discount: String, publisher: String, pubdate: String, isbn: String, description: String) {
+                self.title = title
+                self.link = link
+                self.image = image
+                self.author = author
+                self.discount = discount
+                self.publisher = publisher
+                self.pubdate = pubdate
+                self.isbn = isbn
+                self.description = description
+            }
+            
+            init() {
+                self.title = ""
+                self.link = ""
+                self.image = ""
+                self.author = ""
+                self.discount = ""
+                self.publisher = ""
+                self.pubdate = ""
+                self.isbn = ""
+                self.description = ""
+            }
         }
     }
     

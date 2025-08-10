@@ -7,4 +7,5 @@
 
 protocol LibraryRepositoryProtocol: AnyObject {
     func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem]
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws
 }

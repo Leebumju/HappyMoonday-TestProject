@@ -12,6 +12,25 @@ import RealmSwift
 final class LocalDataFetcher: LocalDataFetchable {
     func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to categoryName: BookCategory) throws {
         let realm = try Realm()
+        
+        var updatedEntity = bookEntity
+        if updatedEntity.isbn.isEmpty {
+            let newISBN = generateUserISBN(in: realm)
+            print(">>>> generated ISBN: \(newISBN)")
+            
+            updatedEntity = Book.Entity.BookItem(
+                title: updatedEntity.title,
+                link: updatedEntity.link,
+                image: updatedEntity.image,
+                author: updatedEntity.author,
+                discount: updatedEntity.discount,
+                publisher: updatedEntity.publisher,
+                pubdate: updatedEntity.pubdate,
+                isbn: newISBN,
+                description: updatedEntity.description
+            )
+        }
+        
         try realm.write {
             let category = realm.objects(BookCategoryEntity.self)
                 .filter("name == %@", categoryName.rawValue)
@@ -24,10 +43,10 @@ final class LocalDataFetcher: LocalDataFetchable {
                 }()
             
             let realmBook: RealmBookItem
-            if let existingBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: bookEntity.isbn) {
+            if let existingBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: updatedEntity.isbn) {
                 realmBook = existingBook
             } else {
-                realmBook = RealmBookItem(from: bookEntity)
+                realmBook = RealmBookItem(from: updatedEntity)
                 realm.add(realmBook)
             }
             
@@ -93,6 +112,13 @@ final class LocalDataFetcher: LocalDataFetchable {
             .sorted(byKeyPath: "searchedAt", ascending: false)
             .prefix(5)
             .map { $0.keyword }
+    }
+    
+    private func generateUserISBN(in realm: Realm) -> String {
+        let userBooksCount = realm.objects(RealmBookItem.self)
+            .filter("isbn BEGINSWITH %@", "user")
+            .count
+        return "user\(userBooksCount)"
     }
 }
 

@@ -11,8 +11,6 @@ import Then
 import SnapKit
 
 class BaseNavigationViewController: BaseViewController {
-    private var cancelBag = Set<AnyCancellable>()
-    
     private(set) lazy var topView: UIView = UIView()
     
     private lazy var titleLabel: UILabel = UILabel().then {

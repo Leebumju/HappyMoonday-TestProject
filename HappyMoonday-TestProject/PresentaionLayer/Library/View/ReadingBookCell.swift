@@ -36,8 +36,6 @@ final class ReadingBookCell: UICollectionViewCell {
     private lazy var titleStackView: UIStackView = UIStackView().then {
         $0.spacing = moderateScale(number: 4)
         $0.alignment = .leading
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
     private lazy var titleLabel: UILabel = UILabel().then {
@@ -47,7 +45,7 @@ final class ReadingBookCell: UICollectionViewCell {
     }
     
     private lazy var authorLabel: UILabel = UILabel().then {
-        $0.textColor = .systemGray
+        $0.textColor = .gray
         $0.attributedText = FontManager.body4M.setFont(alignment: .left)
     }
     
@@ -56,8 +54,6 @@ final class ReadingBookCell: UICollectionViewCell {
         $0.attributedText = FontManager.body3M.setFont(alignment: .left)
         $0.numberOfLines = 0
         $0.lineBreakMode = .byTruncatingTail
-        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
-        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
     
     override init(frame: CGRect) {
@@ -95,15 +91,19 @@ final class ReadingBookCell: UICollectionViewCell {
             $0.top.equalTo(bookImageView).offset(moderateScale(number: 20))
             $0.leading.equalToSuperview().offset(moderateScale(number: 30))
             $0.trailing.equalTo(bookImageView.snp.leading).offset(moderateScale(number: -16))
-            $0.bottom.equalTo(bookImageView).offset(moderateScale(number: -20))
+            $0.bottom.lessThanOrEqualTo(bookImageView).offset(moderateScale(number: -20))
         }
     }
     
     func updateView(with book: Book.Entity.BookItem) {
-        bookImageView.setImageWithSpinner(
-            urlString: book.image,
-            placeholder: UIImage(systemName: "photo")
-        )
+        if book.image.isEmpty {
+            bookImageView.image = UIImage(systemName: "photo")
+        } else {
+            bookImageView.setImageWithSpinner(
+                urlString: book.image,
+                placeholder: UIImage(systemName: "photo")
+            )
+        }
         titleLabel.text = book.title
         authorLabel.text = book.author
         descriptionLabel.text = book.description

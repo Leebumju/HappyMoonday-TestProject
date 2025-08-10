@@ -35,11 +35,6 @@ final class SelectableView: TouchableView {
     
     private lazy var selectedView = UIStackView().then {
         $0.alignment = .center
-        $0.isHidden = true
-    }
-    
-    private lazy var selectedImageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
     }
     
     private lazy var selectedItemText = UILabel().then {
@@ -68,6 +63,7 @@ final class SelectableView: TouchableView {
     
     private func addViews() {
         addSubviews([placeholder, downArrowImageView, selectedView])
+        selectedView.addArrangedSubview(selectedItemText)
     }
     
     private func makeConstraints() {
@@ -96,7 +92,7 @@ final class SelectableView: TouchableView {
         self.selectedItemText.text = selectedItemText
     }
     
-    func getSelectedValue() -> String? {
-        return selectedItemText.text
+    func getSelectedValue() -> String {
+        return selectedItemText.text ?? ""
     }
 }

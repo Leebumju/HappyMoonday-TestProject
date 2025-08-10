@@ -23,6 +23,15 @@ extension LibraryUsecase: LibraryUsecaseProtocol {
         return repository.fetchBooks(in: categoryName)
     }
     
+    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
+        do {
+            try repository.changeBookCategory(bookEntity, to: category)
+        } catch {
+            errorSubject.send(error)
+            throw error
+        }
+    }
+    
     func getErrorSubject() -> AnyPublisher<Error, Never> {
         return errorSubject.eraseToAnyPublisher()
     }
