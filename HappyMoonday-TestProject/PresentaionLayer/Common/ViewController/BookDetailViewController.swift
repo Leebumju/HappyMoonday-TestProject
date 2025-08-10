@@ -221,6 +221,9 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
             try viewModel.changeBookCategory(viewModel.bookInfo,
                                              to: category)
             CommonUtil.hideLoadingView()
+            NotificationCenter.default.post(name: .bookCategoryIsUpdated,
+                                            object: nil,
+                                            userInfo: ["bookCategory": category])
         } catch {}
     }
 }

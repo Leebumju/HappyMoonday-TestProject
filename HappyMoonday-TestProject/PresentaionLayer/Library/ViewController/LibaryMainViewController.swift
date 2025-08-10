@@ -43,7 +43,7 @@ final class LibraryMainViewController: BaseViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        CommonUtil.showLoadingView()
         bind()
     }
     
@@ -68,7 +68,13 @@ final class LibraryMainViewController: BaseViewController{
     }
     
     override func setupIfNeeded() {
-        
+        setupNotifications()
+    }
+    
+    override func deinitialize() {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: .bookCategoryIsUpdated,
+                                                  object: nil)
     }
     
     private func bind() {
@@ -83,9 +89,8 @@ final class LibraryMainViewController: BaseViewController{
         viewModel.allBooksPublisher
             .mainSink { [weak self] _ in
                 guard let self = self else { return }
-                print(viewModel.readingBooks)
-                print(viewModel.wantToReadBooks)
-                print(viewModel.readDoneBooks)
+                bookListView.reloadData()
+                CommonUtil.hideLoadingView()
             }.store(in: &cancelBag)
         
         viewModel.fetchAllBooksCategory()
@@ -139,6 +144,20 @@ final class LibraryMainViewController: BaseViewController{
                                                                           sectionLayout: .init(headerSize: headerSize))
             default: return nil
             }
+        }
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleBookCategoryChanged),
+                                               name: .bookCategoryIsUpdated,
+                                               object: nil)
+    }
+    
+    
+    @objc private func handleBookCategoryChanged(_ notification: Notification) {
+        if let category = notification.userInfo?["bookCategory"] as? BookCategory {
+            viewModel.fetchBooksCategory(with: category)
         }
     }
 }

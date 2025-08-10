@@ -32,4 +32,16 @@ final class LibraryMainViewModel: BaseViewModel {
         
         allBooksSubject.send(())
     }
+    
+    func fetchBooksCategory(with category: BookCategory) {
+        switch category {
+        case .reading:
+            readingBooks = usecase.fetchBooks(in: .reading)
+        case .wantToRead:
+            wantToReadBooks = usecase.fetchBooks(in: .wantToRead)
+        case .readDone:
+            readDoneBooks = usecase.fetchBooks(in: .readDone)
+        }
+        allBooksSubject.send(())
+    }
 }
