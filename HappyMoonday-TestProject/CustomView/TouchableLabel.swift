@@ -28,4 +28,17 @@ class TouchableLabel: UILabel {
     private func tapAction(withGesture gesture: TapGestureRecognizer) {
         gesture.onTapped?()
     }
+    
+    @MainActor
+    func setClickable(_ clickable: Bool) {
+        if clickable {
+            isUserInteractionEnabled = true
+            backgroundColor = .systemBlue
+            font = FontManager.body1M.font
+        } else {
+            isUserInteractionEnabled = false
+            backgroundColor = .systemGray3
+            font = FontManager.body2M.font
+        }
+    }
 }
