@@ -15,7 +15,8 @@ final class LibraryMainViewController: BaseViewController{
     var coordinator: AnyLibraryCoordinator?
     
     private lazy var titleLabel: UILabel = UILabel().then {
-        $0.text = "책"
+        $0.attributedText = FontManager.title2SB.setFont("책 보관함",
+                                                         alignment: .center)
     }
     
     private lazy var bookListView = UICollectionView(frame: .zero, collectionViewLayout: layout()).then {
