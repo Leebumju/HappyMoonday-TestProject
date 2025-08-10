@@ -26,6 +26,22 @@ enum Book {
         let display: Int
         let items: [BookItem]
         
+        init(lastBuildDate: String, total: Int, start: Int, display: Int, items: [BookItem]) {
+            self.lastBuildDate = lastBuildDate
+            self.total = total
+            self.start = start
+            self.display = display
+            self.items = items
+        }
+        
+        init() {
+            self.lastBuildDate = ""
+            self.total = 0
+            self.start = 0
+            self.display = 0
+            self.items = []
+        }
+        
         struct BookItem {
             let title: String
             let link: String

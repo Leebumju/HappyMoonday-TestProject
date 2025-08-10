@@ -14,11 +14,11 @@ final class SearchBooksMainViewModel: BaseViewModel {
                                                              display: nil,
                                                              start: nil,
                                                              sort: nil)
-    private let searchedBooksSubject = CurrentValueSubject<Book.Entity?, Never>(nil)
-    var searchedBooks: Book.Entity? {
+    private let searchedBooksSubject = CurrentValueSubject<Book.Entity, Never>(.init())
+    var searchedBooks: Book.Entity {
         return searchedBooksSubject.value
     }
-    var searchedBooksPublisher: AnyPublisher<Book.Entity?, Never> {
+    var searchedBooksPublisher: AnyPublisher<Book.Entity, Never> {
         return searchedBooksSubject.eraseToAnyPublisher()
     }
     

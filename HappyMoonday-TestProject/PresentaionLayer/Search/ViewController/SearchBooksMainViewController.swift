@@ -147,6 +147,7 @@ class SearchBooksMainViewController: BaseViewController {
                 
                 searchKeywordView.layoutIfNeeded()
                 searchKeywordView.arrangeViews(searchKeywordViews)
+                searchedBookListView.reloadData()
             }.store(in: &cancelBag)
         
         viewModel.fetchRecentSearchKeyword()
@@ -168,7 +169,7 @@ class SearchBooksMainViewController: BaseViewController {
             guard let self = self else { return nil }
             let itemSize: NSCollectionLayoutSize
             
-            if self.viewModel.searchedBooks?.items.isEmpty == true {
+            if self.viewModel.searchedBooks.items.isEmpty == true {
                 itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                   heightDimension: .fractionalHeight(1))
             } else {
@@ -208,7 +209,7 @@ extension SearchBooksMainViewController: UITextFieldDelegate {
 
 extension SearchBooksMainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let searchedBooks = viewModel.searchedBooks else { return 0 }
+        let searchedBooks = viewModel.searchedBooks
         
         if searchedBooks.items.isEmpty {
             collectionView.bounces = false
@@ -220,8 +221,7 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let searchedBooks = viewModel.searchedBooks else { return .init() }
-        
+        let searchedBooks = viewModel.searchedBooks
         if searchedBooks.items.isEmpty {
             guard let cell = collectionView.dequeueReusableCell(NoSearchDataCell.self, indexPath: indexPath) else { return .init() }
             
