@@ -46,8 +46,14 @@ struct NoteMainView: View {
                                                                                     description: "")]
     
     var body: some View {
-        BookListView(books: books)
-    }
+        VStack(alignment: .center, spacing: 16) {
+             Text("노트 목록")
+                 .font(Font(FontManager.title2SB.font!))
+                 .padding(.horizontal)
+             
+             BookListView(books: books)
+         }
+     }
 }
 
 struct BookItemView: View {
