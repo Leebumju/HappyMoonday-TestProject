@@ -23,6 +23,7 @@ class BaseAlertViewController: UIViewController {
     
     private lazy var confirmButton = TouchableLabel().then {
         $0.text = "확인"
+        $0.font = FontManager.body1M.font
         $0.textColor = .white
         $0.layer.cornerRadius = moderateScale(number: 12)
         $0.backgroundColor = .blue
@@ -43,11 +44,13 @@ class BaseAlertViewController: UIViewController {
     }
     
     private(set) lazy var titleLabel = UILabel().then {
+        $0.attributedText = FontManager.body1B.setFont(alignment: .center)
         $0.textColor = .black
         $0.numberOfLines = 0
     }
     
     private(set) lazy var descriptionLabel = UILabel().then {
+        $0.attributedText = FontManager.body2M.setFont(alignment: .center)
         $0.textColor = .black
         $0.numberOfLines = 0
     }

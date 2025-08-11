@@ -63,7 +63,7 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         $0.backgroundColor = .systemGray4
     }
     
-    private lazy var bookPriceStackView: UIStackView = UIStackView().then {
+    private lazy var bookPriceStackView: TouchableStackView = TouchableStackView().then {
         $0.axis = .vertical
         $0.alignment = .leading
         $0.spacing = moderateScale(number: 4)
@@ -251,6 +251,13 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
             CommonUtil.showAlertView(title: "카테고리 추가",
                                      description: "읽었던 책 카테고리에 추가할게요!",
                                      submitCompletion: { self?.changeBookCategory(with: .readDone) })
+        }
+        
+        bookPriceStackView.didTapped { [weak self] in
+            guard let self = self else { return }
+            guard let url = URL(string: self.viewModel.bookInfo.link) else { return }
+            self.coordinator?.moveToAnotherFlow(TabBarFlow.common(.web),
+                                                userData: ["urlRequest": URLRequest(url: url)])
         }
     }
     
