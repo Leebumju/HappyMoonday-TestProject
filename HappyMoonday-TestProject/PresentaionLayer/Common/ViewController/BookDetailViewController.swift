@@ -70,14 +70,17 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     }
     
     private lazy var linkLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.link
-        $0.textColor = .systemGray
+        $0.attributedText = FontManager.body2B.setFont("구매처 바로가기 >",
+                                                       alignment: .left)
+        $0.textColor = .systemBlue
         $0.numberOfLines = 0
     }
     
     private lazy var discountLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.discount
-        $0.textColor = .systemGray
+//        $0.text = viewModel.bookInfo.discount
+        $0.attributedText = FontManager.title2B.setFont("\(viewModel.bookInfo.discount) 원",
+                                                        alignment: .left)
+        $0.textColor = .red
         $0.numberOfLines = 0
     }
     
@@ -92,8 +95,9 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     }
     
     private lazy var descriptionLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.description
-        $0.textColor = .systemGray
+        $0.attributedText = FontManager.body2SB.setFont(viewModel.bookInfo.description,
+                                                        alignment: .left)
+        $0.textColor = .black
         $0.numberOfLines = 0
     }
     
