@@ -33,20 +33,10 @@ final class ReadingBookCell: UICollectionViewCell {
         $0.spacing = moderateScale(number: 6)
     }
     
-    private lazy var titleStackView: UIStackView = UIStackView().then {
-        $0.spacing = moderateScale(number: 4)
-        $0.alignment = .leading
-    }
-    
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.textColor = .black
-        $0.attributedText = FontManager.body2B.setFont(alignment: .left)
+        $0.attributedText = FontManager.body2B.setFont(alignment: .center)
         $0.numberOfLines = 0
-    }
-    
-    private lazy var authorLabel: UILabel = UILabel().then {
-        $0.textColor = .gray
-        $0.attributedText = FontManager.body4M.setFont(alignment: .left)
     }
     
     private lazy var descriptionLabel: UILabel = UILabel().then {
@@ -70,10 +60,8 @@ final class ReadingBookCell: UICollectionViewCell {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
                                    containerStackView])
-        containerStackView.addArrangedSubviews([titleStackView,
+        containerStackView.addArrangedSubviews([titleLabel,
                                                 descriptionLabel])
-        titleStackView.addArrangedSubviews([titleLabel,
-                                            authorLabel])
     }
     
     private func makeConstraints() {
@@ -104,8 +92,10 @@ final class ReadingBookCell: UICollectionViewCell {
                 placeholder: UIImage(systemName: "photo")
             )
         }
-        titleLabel.text = book.title
-        authorLabel.text = book.author
+        titleLabel.text = "\(book.title) (\(book.author))"
+        titleLabel.highLightText(targetString: "(\(book.author))",
+                                 color: .systemGray,
+                                 font: FontManager.body4M.font)
         descriptionLabel.text = book.description
     }
 }

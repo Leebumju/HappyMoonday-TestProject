@@ -29,23 +29,11 @@ final class BookCell: UICollectionViewCell {
         $0.alignment = .center
         $0.spacing = moderateScale(number: 6)
     }
-
-    private lazy var titleStackView: UIStackView = UIStackView().then {
-        $0.spacing = moderateScale(number: 4)
-        $0.alignment = .leading
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-    }
     
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.textColor = .black
-        $0.attributedText = FontManager.body2B.setFont(alignment: .left)
+        $0.attributedText = FontManager.body2B.setFont(alignment: .center)
         $0.numberOfLines = 0
-    }
-    
-    private lazy var authorLabel: UILabel = UILabel().then {
-        $0.textColor = .systemGray
-        $0.attributedText = FontManager.body4M.setFont(alignment: .left)
     }
     
     private lazy var descriptionLabel: UILabel = UILabel().then {
@@ -53,8 +41,6 @@ final class BookCell: UICollectionViewCell {
         $0.attributedText = FontManager.body3M.setFont(alignment: .left)
         $0.numberOfLines = 0
         $0.lineBreakMode = .byTruncatingTail
-        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
-        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
     
     private lazy var dividerView: UIView = UIView().then {
@@ -77,10 +63,8 @@ final class BookCell: UICollectionViewCell {
                                    reportButton,
                                    containerStackView,
                                    dividerView])
-        containerStackView.addArrangedSubviews([titleStackView,
+        containerStackView.addArrangedSubviews([titleLabel,
                                                 descriptionLabel])
-        titleStackView.addArrangedSubviews([titleLabel,
-                                            authorLabel])
     }
     
     private func makeConstraints() {
@@ -118,8 +102,11 @@ final class BookCell: UICollectionViewCell {
             urlString: book.image,
             placeholder: UIImage(systemName: "photo")
         )
-        titleLabel.text = book.title
-        authorLabel.text = book.author
+        
+        titleLabel.text = "\(book.title) (\(book.author))"
+        titleLabel.highLightText(targetString: "(\(book.author))",
+                                 color: .systemGray,
+                                 font: FontManager.body4M.font)
         descriptionLabel.text = book.description
         reportButton.isHidden = !isReadDone
     }

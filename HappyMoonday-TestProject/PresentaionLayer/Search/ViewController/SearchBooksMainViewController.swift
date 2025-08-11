@@ -107,7 +107,8 @@ class SearchBooksMainViewController: BaseViewController {
     }
     
     override func setupIfNeeded() {
-        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
+        view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     private func bind() {
