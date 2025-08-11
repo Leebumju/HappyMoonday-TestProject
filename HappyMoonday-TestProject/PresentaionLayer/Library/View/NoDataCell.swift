@@ -69,6 +69,8 @@ final class NoDataCell: UICollectionViewCell {
             categoryText = "읽고 싶은 책"
         case .readDone:
             categoryText = "읽은 책"
+        case .noted:
+            categoryText = "기록된 책"
         }
         noDataLabel.text = "현재 보관함에 \(categoryText)이 없어요..\n지금 추가해보세요!"
     }

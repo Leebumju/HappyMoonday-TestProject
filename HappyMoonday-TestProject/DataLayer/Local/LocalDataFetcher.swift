@@ -27,9 +27,15 @@ final class LocalDataFetcher: LocalDataFetchable {
                 publisher: updatedEntity.publisher,
                 pubdate: updatedEntity.pubdate,
                 isbn: newISBN,
-                description: updatedEntity.description
+                description: updatedEntity.description,
+                recordDate: updatedEntity.recordDate,
+                startDate: updatedEntity.startDate,
+                endDate: updatedEntity.endDate,
+                note: updatedEntity.note
             )
         }
+        
+        print(updatedEntity)
         
         try realm.write {
             let category = realm.objects(BookCategoryEntity.self)
@@ -132,6 +138,10 @@ final class RealmBookItem: Object {
     @Persisted var publisher: String = ""
     @Persisted var pubdate: String = ""
     @Persisted var bookDescription: String = ""
+    @Persisted var recordDate: Date?
+    @Persisted var startDate: Date?
+    @Persisted var endDate: Date?
+    @Persisted var note: Date?
     
     convenience init(from entity: Book.Entity.BookItem) {
         self.init()
@@ -152,3 +162,6 @@ final class BookCategoryEntity: Object {
     @Persisted var name: String = ""
     @Persisted var books = List<RealmBookItem>()
 }
+
+
+// 작성일, 독서 시작일, 독서 종료일, 감상문

@@ -376,7 +376,7 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 }
                 cell.reportButton.didTapped { [weak self] in
                     self?.coordinator?.moveToAnotherFlow(TabBarFlow.note(.noteBook),
-                                              userData: nil)
+                                                         userData: ["bookInfo": readDoneBooks[indexPath.item]])
                 }
                 return cell
             }

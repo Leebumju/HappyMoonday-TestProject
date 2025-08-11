@@ -39,7 +39,12 @@ final class NoteCoordinator: NSObject, NoteCoordinatable {
     }
     
     func moveToNoteBookScene(userData: [String : Any]?) {
-        let noteBookVC = UIHostingController(rootView: NoteBookView(coordinator: self))
+        guard let bookInfo = userData?["bookInfo"] as? Book.Entity.BookItem else { return }
+        let viewModel: NoteBookViewModel = NoteBookViewModel(usecase: Injector.shared.resolve(NoteUsecaseProtocol.self)!,
+                                                             bookInfo: bookInfo)
+        let noteBookVC = UIHostingController(rootView: NoteBookView(viewModel: viewModel,
+                                                                    coordinator: self))
+        noteBookVC.hidesBottomBarWhenPushed = true
         currentNavigationViewController?.pushViewController(noteBookVC, animated: true)
     }
 }

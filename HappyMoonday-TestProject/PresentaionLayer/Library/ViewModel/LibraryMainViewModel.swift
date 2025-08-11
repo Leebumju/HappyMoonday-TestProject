@@ -41,6 +41,8 @@ final class LibraryMainViewModel: BaseViewModel {
             wantToReadBooks = usecase.fetchBooks(in: .wantToRead)
         case .readDone:
             readDoneBooks = usecase.fetchBooks(in: .readDone)
+        case .noted:
+            return
         }
         allBooksSubject.send(())
     }

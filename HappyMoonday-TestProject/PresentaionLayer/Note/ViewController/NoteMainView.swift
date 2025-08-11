@@ -47,13 +47,13 @@ struct NoteMainView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
-             Text("노트 목록")
-                 .font(Font(FontManager.title2SB.font!))
-                 .padding(.horizontal)
-             
-             BookListView(books: books)
-         }
-     }
+            Text("노트 목록")
+                .font(Font(FontManager.title2SB.font!))
+            
+            BookListView(books: books)
+        }
+        .background(Color.white)
+    }
 }
 
 struct BookItemView: View {
