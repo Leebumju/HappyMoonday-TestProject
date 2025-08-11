@@ -16,8 +16,6 @@ final class LocalDataFetcher: LocalDataFetchable {
         var updatedEntity = bookEntity
         if updatedEntity.isbn.isEmpty {
             let newISBN = generateUserISBN(in: realm)
-            print(">>>> generated ISBN: \(newISBN)")
-            
             updatedEntity = Book.Entity.BookItem(
                 title: updatedEntity.title,
                 link: updatedEntity.link,
@@ -35,7 +33,7 @@ final class LocalDataFetcher: LocalDataFetchable {
             )
         }
         
-        print(updatedEntity)
+        print("updateEntity<<<<<<\n\(updatedEntity)")
         
         try realm.write {
             let category = realm.objects(BookCategoryEntity.self)
@@ -127,41 +125,3 @@ final class LocalDataFetcher: LocalDataFetchable {
         return "user\(userBooksCount)"
     }
 }
-
-final class RealmBookItem: Object {
-    @Persisted(primaryKey: true) var isbn: String = ""
-    @Persisted var title: String = ""
-    @Persisted var link: String = ""
-    @Persisted var image: String = ""
-    @Persisted var author: String = ""
-    @Persisted var discount: String = ""
-    @Persisted var publisher: String = ""
-    @Persisted var pubdate: String = ""
-    @Persisted var bookDescription: String = ""
-    @Persisted var recordDate: Date?
-    @Persisted var startDate: Date?
-    @Persisted var endDate: Date?
-    @Persisted var note: Date?
-    
-    convenience init(from entity: Book.Entity.BookItem) {
-        self.init()
-        self.isbn = entity.isbn
-        self.title = entity.title
-        self.link = entity.link
-        self.image = entity.image
-        self.author = entity.author
-        self.discount = entity.discount
-        self.publisher = entity.publisher
-        self.pubdate = entity.pubdate
-        self.bookDescription = entity.description
-    }
-}
-
-final class BookCategoryEntity: Object {
-    @Persisted(primaryKey: true) var id: ObjectId
-    @Persisted var name: String = ""
-    @Persisted var books = List<RealmBookItem>()
-}
-
-
-// 작성일, 독서 시작일, 독서 종료일, 감상문
