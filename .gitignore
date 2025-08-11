@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Xcode 빌드 산출물
+build/
+DerivedData/
+
+# Xcode 프로젝트 사용자 데이터
+*.xcworkspace
+*.xcuserstate
+*.xcscmblueprint
+xcuserdata/
+project.xcworkspace/xcuserdata/
+project.xcworkspace/xcshareddata/swiftpm/
+
+# Swift Package Manager
+.swiftpm/
+.packages/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# 기타 로그/임시 파일
+*.log
+*.tmp

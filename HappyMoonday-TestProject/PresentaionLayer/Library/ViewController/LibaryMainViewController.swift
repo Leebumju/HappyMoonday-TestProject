@@ -1,0 +1,387 @@
+//
+//  LibaryMainViewController.swift
+//  HappyMoonday-TestProject
+//
+//  Created by 이범준 on 8/8/25.
+//
+
+import UIKit
+import SnapKit
+import Then
+import Combine
+
+final class LibraryMainViewController: BaseViewController {
+    private var cancelBag = Set<AnyCancellable>()
+    var coordinator: AnyLibraryCoordinator?
+    
+    private lazy var titleLabel: UILabel = UILabel().then {
+        $0.attributedText = FontManager.title2SB.setFont("책 보관함",
+                                                         alignment: .center)
+    }
+    
+    private lazy var addBookInfoButton: TouchableImageView = TouchableImageView(frame: .zero).then {
+        $0.image = UIImage(systemName: "plus")?.withTintColor(.systemGray3,
+                                                              renderingMode: .alwaysOriginal)
+    }
+    
+    private lazy var bookListView = UICollectionView(frame: .zero, collectionViewLayout: layout()).then {
+        $0.dataSource = self
+        $0.showsVerticalScrollIndicator = false
+        $0.contentInsetAdjustmentBehavior = .never
+        $0.registerCell(ReadingBookCell.self)
+        $0.registerCell(WantToReedBookCell.self)
+        $0.registerCell(BookCell.self)
+        $0.registerCell(NoDataCell.self)
+        $0.registerSupplimentaryView(ReadingBookHeaderView.self, supplementaryViewOfKind: .header)
+        $0.registerSupplimentaryView(FavoriteBookHeaderView.self, supplementaryViewOfKind: .header)
+    }
+    
+    private let viewModel: LibraryMainViewModel
+    
+    init(viewModel: LibraryMainViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        CommonUtil.showLoadingView()
+        bind()
+    }
+    
+    override func addViews() {
+        view.addSubviews([titleLabel,
+                          addBookInfoButton,
+                          bookListView])
+    }
+    
+    override func makeConstraints() {
+        let tabBarHeight: CGFloat = tabBarController?.tabBar.bounds.height ?? moderateScale(number: 48) + getSafeAreaBottom()
+        
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(getSafeAreaTop() + moderateScale(number: 24))
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        addBookInfoButton.snp.makeConstraints {
+            $0.size.equalTo(moderateScale(number: 24))
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
+        }
+        
+        bookListView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(moderateScale(number: 10))
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(moderateScale(number: -tabBarHeight))
+        }
+    }
+    
+    override func setupIfNeeded() {
+        setupNotifications()
+        
+        addBookInfoButton.didTapped { [weak self] in
+            self?.coordinator?.moveTo(.addBookInfo,
+                                      userData: nil)
+        }
+    }
+    
+    override func deinitialize() {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: .bookCategoryIsUpdated,
+                                                  object: nil)
+    }
+    
+    private func bind() {
+        viewModel.getErrorSubject()
+            .mainSink { [weak self] error in
+                CommonUtil.showAlertView(title: "error",
+                                         description: error.localizedDescription,
+                                         submitText: "확인",
+                                         submitCompletion: nil)
+            }.store(in: &cancelBag)
+        
+        viewModel.allBooksPublisher
+            .mainSink { [weak self] _ in
+                guard let self = self else { return }
+                bookListView.reloadData()
+                CommonUtil.hideLoadingView()
+            }.store(in: &cancelBag)
+        
+        viewModel.fetchAllBooksCategory()
+    }
+    
+    private func layout() -> UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
+            guard let self = self else { return nil }
+            switch sectionIndex {
+            case 0:
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
+                
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(moderateScale(number: 200))
+                )
+                
+                let headerSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(moderateScale(number: 46))
+                )
+
+                let header = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: headerSize,
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )
+
+                let sectionLayout = NSCollectionLayoutSection(
+                    group: NSCollectionLayoutGroup.horizontal(
+                        layoutSize: groupSize,
+                        subitems: [NSCollectionLayoutItem(layoutSize: itemSize)]
+                    )
+                )
+                
+                sectionLayout.boundarySupplementaryItems = [header]
+                sectionLayout.orthogonalScrollingBehavior = .groupPagingCentered
+                
+                return sectionLayout
+            case 1:
+                if self.viewModel.wantToReadBooks.isEmpty {
+                    let itemSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                                                  heightDimension: .absolute(moderateScale(number: 200)))
+                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                            heightDimension: .estimated(moderateScale(number: 46)))
+                    return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
+                                                                              groupLayout: .init(size: itemSize),
+                                                                              sectionLayout: .init(headerSize: headerSize))
+                } else {
+                    let sideInset = moderateScale(number: 20)
+                    let interItemSpacing = moderateScale(number: 20)
+                    let screenWidth = UIScreen.main.bounds.width
+                    let itemWidth = (screenWidth - sideInset * 2 - interItemSpacing) / 2
+
+                    let itemSize = NSCollectionLayoutSize(
+                        widthDimension: .absolute(floor(itemWidth)),
+                        heightDimension: .absolute(moderateScale(number: 200))
+                    )
+                    let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                    
+                    let groupSize = NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .absolute(moderateScale(number: 200))
+                    )
+
+                    let group = NSCollectionLayoutGroup.horizontal(
+                        layoutSize: groupSize,
+                        subitem: item,
+                        count: 2
+                    )
+
+                    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sideInset, bottom: 0, trailing: sideInset)
+                    group.interItemSpacing = .fixed(interItemSpacing)
+
+                    let section = NSCollectionLayoutSection(group: group)
+
+                    section.interGroupSpacing = moderateScale(number: 20)
+                    section.contentInsets = .zero
+
+                    let headerSize = NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .estimated(moderateScale(number: 46))
+                    )
+
+                    let header = NSCollectionLayoutBoundarySupplementaryItem(
+                        layoutSize: headerSize,
+                        elementKind: UICollectionView.elementKindSectionHeader,
+                        alignment: .top
+                    )
+                    section.contentInsets.bottom = moderateScale(number: 20)
+                    section.boundarySupplementaryItems = [header]
+
+                    return section
+                }
+            case 2:
+                let itemSize: NSCollectionLayoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                                              heightDimension: .absolute(moderateScale(number: 200)))
+                let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                        heightDimension: .estimated(moderateScale(number: 46)))
+                return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
+                                                                          groupLayout: .init(size: itemSize),
+                                                                          sectionLayout: .init(headerSize: headerSize))
+            default: return nil
+            }
+        }
+    }
+    
+    private func generateMainCountryListLayout(showFullList: Bool) -> NSCollectionLayoutSection {
+        let width: CGFloat = (UIScreen.main.bounds.width - moderateScale(number: 56)) / 3
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(floor(width)),
+                                              heightDimension: .absolute(moderateScale(number: 93)))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                               heightDimension: .absolute(moderateScale(number: 93)))
+        var footerSize: NSCollectionLayoutSize?
+        
+        if !showFullList {
+            footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                heightDimension: .absolute(moderateScale(number: 48)))
+        }
+        
+        return CompositionalLayoutProvider.configureSectionLayout(withItemLayout: .init(size: itemSize),
+                                                                  groupLayout: .init(size: groupSize,
+                                                                                     interItemSpacing: .fixed(moderateScale(number: 8))),
+                                                                  sectionLayout: .init(contentInsets: .init(top: 0,
+                                                                                                            leading: moderateScale(number: 20),
+                                                                                                            bottom: moderateScale(number: 12),
+                                                                                                            trailing: moderateScale(number: 20)),
+                                                                                       interGroupSpacing: moderateScale(number: 8),
+                                                                                       footerSize: footerSize),
+                                                                  isVertical: false)
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleBookCategoryChanged),
+                                               name: .bookCategoryIsUpdated,
+                                               object: nil)
+    }
+    
+    
+    @objc private func handleBookCategoryChanged(_ notification: Notification) {
+        if let category = notification.userInfo?["bookCategory"] as? BookCategory {
+            viewModel.fetchBooksCategory(with: category)
+        }
+    }
+}
+
+extension LibraryMainViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch indexPath.section {
+        case 0:
+            guard let readingHeaderView = collectionView.dequeueSupplimentaryView(ReadingBookHeaderView.self,
+                                                                                  supplementaryViewOfKind: .header,
+                                                                                  indexPath: indexPath) else { return .init() }
+           return readingHeaderView
+        case 1:
+            guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
+                                                                                  supplementaryViewOfKind: .header,
+                                                                                  indexPath: indexPath) else { return .init() }
+            favoriteBookHeaderView.updateView(with: "읽고 싶은 책")
+           return favoriteBookHeaderView
+        case 2:
+            guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
+                                                                                  supplementaryViewOfKind: .header,
+                                                                                  indexPath: indexPath) else { return .init() }
+            favoriteBookHeaderView.updateView(with: "읽은 책")
+           return favoriteBookHeaderView
+        default:
+            return UICollectionReusableView()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            if viewModel.readingBooks.isEmpty {
+                return 1
+            } else {
+                return viewModel.readingBooks.count
+            }
+        case 1:
+            if viewModel.wantToReadBooks.isEmpty {
+                return 1
+            } else {
+                return viewModel.wantToReadBooks.count
+            }
+        case 2:
+            if viewModel.readDoneBooks.isEmpty {
+                return 1
+            } else {
+                return viewModel.readDoneBooks.count
+            }
+        default:
+            return 0
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch indexPath.section {
+        case 0:
+            if viewModel.readingBooks.isEmpty {
+                guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+                cell.containerStackView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
+                }
+                cell.updateView(with: .reading)
+                return cell
+            } else {
+                let readingBooks = viewModel.readingBooks
+                guard let cell = collectionView.dequeueReusableCell(ReadingBookCell.self, indexPath: indexPath) else { return .init() }
+                
+                cell.updateView(with: readingBooks[indexPath.item])
+                cell.containerView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail),
+                                                         userData: ["bookInfo": readingBooks[indexPath.item]])
+                }
+                return cell
+            }
+        case 1:
+            let wantToReadBooks = viewModel.wantToReadBooks
+            if wantToReadBooks.isEmpty {
+                guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+                cell.containerStackView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
+                }
+                
+                cell.updateView(with: .wantToRead)
+                return cell
+            } else {
+                guard let cell = collectionView.dequeueReusableCell(WantToReedBookCell.self, indexPath: indexPath) else { return .init() }
+                
+                cell.updateView(with: wantToReadBooks[indexPath.item])
+                cell.containerView.didTapped { [weak self] in
+                    guard let url = URL(string: wantToReadBooks[indexPath.item].link) else { return }
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.web),
+                                                         userData: ["urlRequest": URLRequest(url: url)])
+                }
+                return cell
+            }
+        case 2:
+            if viewModel.readDoneBooks.isEmpty {
+                guard let cell = collectionView.dequeueReusableCell(NoDataCell.self, indexPath: indexPath) else { return .init() }
+                cell.containerStackView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.search(.main), userData: nil)
+                }
+                
+                cell.updateView(with: .readDone)
+                return cell
+            } else {
+                let readDoneBooks = viewModel.readDoneBooks
+                guard let cell = collectionView.dequeueReusableCell(BookCell.self, indexPath: indexPath) else { return .init() }
+                
+                cell.updateView(with: readDoneBooks[indexPath.item], isReadDone: true)
+                cell.containerView.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.common(.bookDetail),
+                                                         userData: ["bookInfo": readDoneBooks[indexPath.item]])
+                }
+                cell.reportButton.didTapped { [weak self] in
+                    self?.coordinator?.moveToAnotherFlow(TabBarFlow.note(.noteBook),
+                                              userData: nil)
+                }
+                return cell
+            }
+        default:
+            return UICollectionViewCell()
+        }
+    }
+}
