@@ -38,6 +38,43 @@ struct NoteBookView: View {
                             }
                     }
                     
+                    HStack(alignment: .top, spacing: 12) {
+                        AsyncImage(url: URL(string: viewModel.bookInfo.image)) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(width: 60, height: 90)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 60, height: 90)
+                                    .cornerRadius(8)
+                            case .failure:
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 60, height: 90)
+                                    .cornerRadius(8)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(viewModel.bookInfo.title)
+                                .font(Font(FontManager.title3B.font!))
+                                .foregroundColor(.primary)
+                                .lineLimit(2)
+                            
+                            Text(viewModel.bookInfo.author)
+                                .font(Font(FontManager.body1M.font!))
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .padding(.vertical, 8)
+                    
                     NoteTextFieldView(
                         text: $startDate,
                         placeholder: "독서 시작일"
