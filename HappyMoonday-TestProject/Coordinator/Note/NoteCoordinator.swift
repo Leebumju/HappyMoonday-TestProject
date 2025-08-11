@@ -16,15 +16,12 @@ final class NoteCoordinator: NSObject, NoteCoordinatable {
     var rootViewController: UIViewController = UIViewController()
     
     func start() -> UIViewController {
-        // TODO: - UIKit 변경시 주석 제거
-//        let noteVC = NoteMainViewController()
-////        noteVC.coordinator = self
-//        rootViewController = UINavigationController(rootViewController: noteVC)
-//        return rootViewController
-        let noteMainVC = UIHostingController(rootView: NoteMainView())
-        rootViewController = UINavigationController(rootViewController: noteMainVC)
-        
-        return rootViewController
+        let viewModel = NoteMainViewModel(usecase: Injector.shared.resolve(NoteUsecaseProtocol.self)!)
+         let rootView = NoteMainView(viewModel: viewModel, coordinator: self)
+         let noteMainVC = UIHostingController(rootView: rootView)
+         
+         rootViewController = UINavigationController(rootViewController: noteMainVC)
+         return rootViewController
     }
     
     func moveTo(_ appFlow: NoteScene, userData: [String : Any]?) {

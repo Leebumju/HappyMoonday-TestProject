@@ -8,51 +8,27 @@
 import SwiftUI
 
 struct NoteMainView: View {
-    let books: [Book.Entity.BookItem] = [.init(title: "제목",
-                                               link: "",
-                                               image: "",
-                                               author: "저자",
-                                               discount: "",
-                                               publisher: "",
-                                               pubdate: "",
-                                               isbn: "",
-                                               description: ""),
-                                         .init(title: "제목",
-                                                                                    link: "",
-                                                                                    image: "",
-                                                                                    author: "저자",
-                                                                                    discount: "",
-                                                                                    publisher: "",
-                                                                                    pubdate: "",
-                                                                                    isbn: "",
-                                                                                    description: ""),
-                                         .init(title: "제목",
-                                                                                    link: "",
-                                                                                    image: "",
-                                                                                    author: "저자",
-                                                                                    discount: "",
-                                                                                    publisher: "",
-                                                                                    pubdate: "",
-                                                                                    isbn: "",
-                                                                                    description: ""),
-                                         .init(title: "제목",
-                                                                                    link: "",
-                                                                                    image: "",
-                                                                                    author: "저자",
-                                                                                    discount: "",
-                                                                                    publisher: "",
-                                                                                    pubdate: "",
-                                                                                    isbn: "",
-                                                                                    description: "")]
+    @ObservedObject var viewModel: NoteMainViewModel
+    var coordinator: AnyNoteCoordinator?
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             Text("노트 목록")
                 .font(Font(FontManager.title2SB.font!))
             
-            BookListView(books: books)
+            BookListView(
+                books: viewModel.notedBooks,
+                onBookTap: { book in
+                    print("선택된 책: \(book.title)")
+                    coordinator?.moveTo(.noteBook,
+                                        userData: ["bookInfo": book])
+                }
+            )
         }
         .background(Color.white)
+        .onAppear {
+            viewModel.fetchNotedBooks()
+        }
     }
 }
 
@@ -84,10 +60,14 @@ struct BookItemView: View {
 
 struct BookListView: View {
     let books: [Book.Entity.BookItem]
-
+    let onBookTap: (Book.Entity.BookItem) -> Void
+    
     var body: some View {
         List(books) { book in
             BookItemView(book: book)
+                .onTapGesture {
+                    onBookTap(book)
+                }
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
         .listStyle(PlainListStyle())
