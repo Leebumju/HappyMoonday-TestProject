@@ -19,4 +19,11 @@ final class NoteMainViewModel: ObservableObject {
     func fetchNotedBooks() {
         notedBooks = usecase.fetchBooks(in: .noted)
     }
+    
+    func deleteNotedBook(book: Book.Entity.BookItem) throws {
+        do {
+            try usecase.deleteBookInCategory(book: book, in: .noted)
+            fetchNotedBooks()
+        } catch { throw error }
+    }
 }

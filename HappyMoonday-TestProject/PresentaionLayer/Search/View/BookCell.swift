@@ -97,7 +97,7 @@ final class BookCell: UICollectionViewCell {
         }
     }
     
-    func updateView(with book: Book.Entity.BookItem, isReadDone: Bool = false) {
+    func updateView(with book: Book.Entity.BookItem, isReadDone: Bool = false, isEditMode: Bool = false) {
         bookImageView.setImageWithSpinner(
             urlString: book.image,
             placeholder: UIImage(systemName: "photo")
@@ -109,5 +109,8 @@ final class BookCell: UICollectionViewCell {
                                  font: FontManager.body4M.font)
         descriptionLabel.text = book.description
         reportButton.isHidden = !isReadDone
+        reportButton.image = isEditMode ?
+        UIImage(systemName: "minus.circle.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal) :
+        UIImage(systemName: "pencil")?.withTintColor(.systemGray, renderingMode: .alwaysOriginal)
     }
 }

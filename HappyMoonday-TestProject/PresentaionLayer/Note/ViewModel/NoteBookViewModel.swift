@@ -12,7 +12,7 @@ final class NoteBookViewModel: ObservableObject {
     @Published var noteBookIsSuccess: Bool = false
     
     private let usecase: NoteUsecaseProtocol
-    var bookInfo: Book.Entity.BookItem
+    let bookInfo: Book.Entity.BookItem
     
     init(usecase: NoteUsecaseProtocol, bookInfo: Book.Entity.BookItem) {
         self.usecase = usecase

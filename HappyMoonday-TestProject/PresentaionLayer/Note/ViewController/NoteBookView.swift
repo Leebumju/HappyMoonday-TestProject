@@ -11,9 +11,17 @@ struct NoteBookView: View {
     @ObservedObject var viewModel: NoteBookViewModel
     var coordinator: AnyNoteCoordinator?
     @State private var category: BookCategory = .readDone
-    @State private var startDate: String = ""
-    @State private var endDate: String = ""
+    @State private var startDate: Date = Date()
+    @State private var endDate: Date = Date()
+    @State private var showStartDatePicker = false
+    @State private var showEndDatePicker = false
     @State private var noteText: String = ""
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter
+    }
     
     var body: some View {
         VStack {
@@ -30,73 +38,111 @@ struct NoteBookView: View {
                             .onTapGesture {
                                 Task {
                                     do {
-                                        try viewModel.noteBook(startDate: Date(),
-                                                               endDate: Date(),
+                                        CommonUtil.showLoadingView()
+                                        try viewModel.noteBook(startDate: startDate,
+                                                               endDate: endDate,
                                                                note: noteText)
+                                        CommonUtil.hideLoadingView()
+                                        CommonUtil.showAlertView(title: "저장 완료",
+                                                                 description: "저장이 완료되었어요!",
+                                                                 submitCompletion: nil)
                                     } catch {}
                                 }
                             }
                     }
                     
-                    HStack(alignment: .top, spacing: 12) {
-                        AsyncImage(url: URL(string: viewModel.bookInfo.image)) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                                    .frame(width: 60, height: 90)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 60, height: 90)
-                                    .cornerRadius(8)
-                            case .failure:
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 60, height: 90)
-                                    .cornerRadius(8)
-                            @unknown default:
-                                EmptyView()
-                            }
+                    HStack {
+                        AsyncImage(url: URL(string: viewModel.bookInfo.image)) { image in
+                            image.resizable()
+                        } placeholder: {
+                            Color.gray
                         }
+                        .frame(width: 60, height: 90)
+                        .cornerRadius(8)
                         
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading) {
                             Text(viewModel.bookInfo.title)
-                                .font(Font(FontManager.title3B.font!))
-                                .foregroundColor(.primary)
-                                .lineLimit(2)
-                            
+                                .font(.headline)
                             Text(viewModel.bookInfo.author)
-                                .font(Font(FontManager.body1M.font!))
+                                .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
                     }
                     .padding(.vertical, 8)
                     
-                    NoteTextFieldView(
-                        text: $startDate,
-                        placeholder: "독서 시작일"
-                    )
+                    Text("시작일")
+                        .font(Font(FontManager.body2B.font!))
                     
-                    NoteTextFieldView(
-                        text: $endDate,
-                        placeholder: "독서 종료일"
-                    )
+                    Button {
+                        showStartDatePicker = true
+                    } label: {
+                        HStack {
+                            Text(dateFormatter.string(from: startDate))
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "calendar")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $showStartDatePicker) {
+                        DatePicker(
+                            "시작일 선택",
+                            selection: $startDate,
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .padding()
+                    }
+                    
+                    Text("종료일")
+                        .font(Font(FontManager.body2B.font!))
+                    
+                    Button {
+                        showEndDatePicker = true
+                    } label: {
+                        HStack {
+                            Text(dateFormatter.string(from: endDate))
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "calendar")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $showEndDatePicker) {
+                        DatePicker(
+                            "종료일 선택",
+                            selection: $endDate,
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .padding()
+                    }
                     
                     Text("감상문")
-                        .font(.body)
-                        .foregroundColor(.black)
-                    
+                        .font(Font(FontManager.body2B.font!))
+
                     TextEditor(text: $noteText)
                         .padding(8)
                         .background(Color(.systemGray6))
-                        .cornerRadius(12)
-                        .frame(height: 300)
+                        .cornerRadius(8)
+                        .frame(height: 150)
                 }
                 .padding(.top, 10)
                 .padding(.horizontal, 20)
+            }
+            .onAppear {
+                startDate = viewModel.bookInfo.startDate ?? Date()
+                endDate = viewModel.bookInfo.endDate ?? Date()
+                noteText = viewModel.bookInfo.note ?? ""
             }
             .onTapGesture {
                 hideKeyboard()
@@ -106,17 +152,5 @@ struct NoteBookView: View {
     
     private func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
-struct NoteTextFieldView: View {
-    @Binding var text: String
-    var placeholder: String
-    
-    var body: some View {
-        TextField(placeholder, text: $text)
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
     }
 }

@@ -27,6 +27,12 @@ final class ReadingBookCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
+    private(set) lazy var editButton: TouchableImageView = TouchableImageView(frame: .zero).then {
+        $0.contentMode = .scaleAspectFit
+        $0.image = UIImage(systemName: "minus.circle.fill")?.withTintColor(.red,
+                                                                           renderingMode: .alwaysOriginal)
+    }
+    
     private lazy var containerStackView: UIStackView = UIStackView().then {
         $0.axis = .vertical
         $0.alignment = .center
@@ -59,6 +65,7 @@ final class ReadingBookCell: UICollectionViewCell {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
+                                   editButton,
                                    containerStackView])
         containerStackView.addArrangedSubviews([titleLabel,
                                                 descriptionLabel])
@@ -75,6 +82,12 @@ final class ReadingBookCell: UICollectionViewCell {
             $0.top.bottom.equalToSuperview().inset(moderateScale(number: 25))
         }
         
+        editButton.snp.makeConstraints {
+            $0.size.equalTo(moderateScale(number: 24))
+            $0.top.equalToSuperview().offset(moderateScale(number: 20))
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
+        }
+        
         containerStackView.snp.makeConstraints {
             $0.top.equalTo(bookImageView).offset(moderateScale(number: 20))
             $0.leading.equalToSuperview().offset(moderateScale(number: 30))
@@ -83,7 +96,7 @@ final class ReadingBookCell: UICollectionViewCell {
         }
     }
     
-    func updateView(with book: Book.Entity.BookItem) {
+    func updateView(with book: Book.Entity.BookItem, isEditMode: Bool) {
         if book.image.isEmpty {
             bookImageView.image = UIImage(systemName: "photo")
         } else {
@@ -92,6 +105,7 @@ final class ReadingBookCell: UICollectionViewCell {
                 placeholder: UIImage(systemName: "photo")
             )
         }
+        editButton.isHidden = !isEditMode
         titleLabel.text = "\(book.title) (\(book.author))"
         titleLabel.highLightText(targetString: "(\(book.author))",
                                  color: .systemGray,

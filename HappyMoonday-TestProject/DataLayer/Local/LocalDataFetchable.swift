@@ -8,16 +8,12 @@
 import Foundation
 
 protocol LocalDataFetchable: AnyObject {
-//    func saveBooks(_ books: [Book.Entity]) throws
-//    func fetchBooks() -> [Book.Entity]
-//    func deleteBook(id: ObjectId) throws
-    
-    
     // MARK: - 검색어
     func saveRecentSearchKeyword(_ keyword: String) throws
     func fetchRecentSearchKeywords() -> [String]
     
     // MARK: - 책 상태관리
     func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws
     func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem]
 }

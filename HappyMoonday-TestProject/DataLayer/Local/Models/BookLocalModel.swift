@@ -21,7 +21,7 @@ final class RealmBookItem: Object {
     @Persisted var recordDate: Date?
     @Persisted var startDate: Date?
     @Persisted var endDate: Date?
-    @Persisted var note: Date?
+    @Persisted var note: String?
     
     convenience init(from entity: Book.Entity.BookItem) {
         self.init()
@@ -34,6 +34,10 @@ final class RealmBookItem: Object {
         self.publisher = entity.publisher
         self.pubdate = entity.pubdate
         self.bookDescription = entity.description
+        self.recordDate = entity.recordDate
+        self.startDate = entity.startDate
+        self.endDate = entity.endDate
+        self.note = entity.note
     }
 }
 

@@ -31,6 +31,14 @@ extension NoteUsecase: NoteUsecaseProtocol {
         }
     }
     
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
+        do {
+            try repository.deleteBookInCategory(book: book, in: category)
+        } catch {
+            throw error
+        }
+    }
+    
     func getErrorSubject() -> AnyPublisher<Error, Never> {
         return errorSubject.eraseToAnyPublisher()
     }
