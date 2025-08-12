@@ -271,18 +271,27 @@ extension LibraryMainViewController: UICollectionViewDataSource {
             guard let readingHeaderView = collectionView.dequeueSupplimentaryView(ReadingBookHeaderView.self,
                                                                                   supplementaryViewOfKind: .header,
                                                                                   indexPath: indexPath) else { return .init() }
+            readingHeaderView.deleteButton.didTapped {
+                readingHeaderView.updateDeleteMode()
+            }
            return readingHeaderView
         case 1:
             guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
                                                                                   supplementaryViewOfKind: .header,
                                                                                   indexPath: indexPath) else { return .init() }
             favoriteBookHeaderView.updateView(with: "읽고 싶은 책")
+            favoriteBookHeaderView.deleteButton.didTapped {
+                favoriteBookHeaderView.updateDeleteMode()
+            }
            return favoriteBookHeaderView
         case 2:
             guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
                                                                                   supplementaryViewOfKind: .header,
                                                                                   indexPath: indexPath) else { return .init() }
             favoriteBookHeaderView.updateView(with: "읽은 책")
+            favoriteBookHeaderView.deleteButton.didTapped {
+                favoriteBookHeaderView.updateDeleteMode()
+            }
            return favoriteBookHeaderView
         default:
             return UICollectionReusableView()

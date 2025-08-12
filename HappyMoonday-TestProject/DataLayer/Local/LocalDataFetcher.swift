@@ -97,6 +97,22 @@ final class LocalDataFetcher: LocalDataFetchable {
         }
     }
     
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
+        let realm = try! Realm()
+         
+         try realm.write {
+             guard let categoryEntity = realm.objects(BookCategoryEntity.self)
+                     .filter("name == %@", category.rawValue)
+                     .first else { return }
+             
+             guard let realmBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: book.isbn) else { return }
+             
+             if let index = categoryEntity.books.firstIndex(of: realmBook) {
+                 categoryEntity.books.remove(at: index)
+             }
+         }
+    }
+    
     func saveRecentSearchKeyword(_ keyword: String) throws {
         let realm = try Realm()
         
