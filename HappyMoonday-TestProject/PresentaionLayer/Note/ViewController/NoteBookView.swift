@@ -11,9 +11,18 @@ struct NoteBookView: View {
     @ObservedObject var viewModel: NoteBookViewModel
     var coordinator: AnyNoteCoordinator?
     @State private var category: BookCategory = .readDone
-    @State private var startDate: String = ""
-    @State private var endDate: String = ""
+    @State private var startDate: Date = Date()
+    @State private var endDate: Date = Date()
+    @State private var showStartDatePicker = false
+    @State private var showEndDatePicker = false
     @State private var noteText: String = ""
+    
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter
+    }
     
     var body: some View {
         VStack {
@@ -38,25 +47,59 @@ struct NoteBookView: View {
                             }
                     }
                     
-                    NoteTextFieldView(
-                        text: $startDate,
-                        placeholder: "독서 시작일"
-                    )
-                    
-                    NoteTextFieldView(
-                        text: $endDate,
-                        placeholder: "독서 종료일"
-                    )
-                    
-                    Text("감상문")
-                        .font(.body)
-                        .foregroundColor(.black)
-                    
-                    TextEditor(text: $noteText)
-                        .padding(8)
+                    Text("시작일")
+                        .font(Font(FontManager.body2B.font!))
+                    Button {
+                        showStartDatePicker = true
+                    } label: {
+                        HStack {
+                            Text(dateFormatter.string(from: startDate))
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "calendar")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
                         .background(Color(.systemGray6))
-                        .cornerRadius(12)
-                        .frame(height: 300)
+                        .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $showStartDatePicker) {
+                        DatePicker(
+                            "시작일 선택",
+                            selection: $startDate,
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .padding()
+                    }
+                    
+                    Text("종료일")
+                        .font(Font(FontManager.body2B.font!))
+                    Button {
+                        showEndDatePicker = true
+                    } label: {
+                        HStack {
+                            Text(dateFormatter.string(from: endDate))
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "calendar")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $showEndDatePicker) {
+                        DatePicker(
+                            "종료일 선택",
+                            selection: $endDate,
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .padding()
+                    }
                 }
                 .padding(.top, 10)
                 .padding(.horizontal, 20)
