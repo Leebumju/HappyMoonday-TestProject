@@ -20,6 +20,8 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
     
     private lazy var containerView: UIView = UIView()
     
+    private lazy var bookBackgroundView: GradientView = GradientView()
+    
     private lazy var bookImageView: UIImageView = UIImageView().then {
         $0.setImageWithSpinner(
             urlString: viewModel.bookInfo.image,
@@ -28,63 +30,80 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var bookDetailStackView: UIStackView = UIStackView().then {
+    private lazy var bookTitleStackView: UIStackView = UIStackView().then {
         $0.axis = .vertical
         $0.alignment = .leading
         $0.spacing = moderateScale(number: 4)
     }
     
     private lazy var bookTitleLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.title
-        $0.textColor = .systemGray
-        $0.numberOfLines = 0
-    }
-    
-    private lazy var linkLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.link
-        $0.textColor = .systemGray
+        $0.attributedText = FontManager.title2B.setFont(viewModel.bookInfo.title,
+                                                        alignment: .left)
+        $0.textColor = .black
         $0.numberOfLines = 0
     }
     
     private lazy var authorLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.author
-        $0.textColor = .systemGray
+        $0.attributedText = FontManager.title3M.setFont("\(viewModel.bookInfo.author) 저",
+                                                        alignment: .left)
+        $0.textColor = .black
+        $0.numberOfLines = 0
+        $0.highLightText(targetString: "저", color: .systemGray, font: FontManager.title3M.font)
+    }
+    
+    private lazy var publisherLabel: UILabel = UILabel().then {
+        $0.attributedText = FontManager.title4M.setFont("\(viewModel.bookInfo.publisher) , \(viewModel.bookInfo.pubdate)",
+                                                        alignment: .left)
+        $0.textColor = .black
+        $0.numberOfLines = 0
+        $0.highLightText(targetString: viewModel.bookInfo.pubdate, color: .systemGray, font: FontManager.title4M.font)
+    }
+    
+    private lazy var firstDividerView: UIView = UIView().then {
+        $0.backgroundColor = .systemGray4
+    }
+    
+    private lazy var bookPriceStackView: TouchableStackView = TouchableStackView().then {
+        $0.axis = .vertical
+        $0.alignment = .leading
+        $0.spacing = moderateScale(number: 4)
+    }
+    
+    private lazy var linkLabel: UILabel = UILabel().then {
+        $0.attributedText = FontManager.body2B.setFont("구매처 바로가기 >",
+                                                       alignment: .left)
+        $0.textColor = .systemBlue
         $0.numberOfLines = 0
     }
     
     private lazy var discountLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.discount
-        $0.textColor = .systemGray
+//        $0.text = viewModel.bookInfo.discount
+        $0.attributedText = FontManager.title2B.setFont("\(viewModel.bookInfo.discount) 원",
+                                                        alignment: .left)
+        $0.textColor = .red
         $0.numberOfLines = 0
     }
     
-    private lazy var publisherLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.publisher
-        $0.textColor = .systemGray
-        $0.numberOfLines = 0
+    private lazy var secondDividerView: UIView = UIView().then {
+        $0.backgroundColor = .systemGray4
     }
     
-    private lazy var pubdateLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.pubdate
-        $0.textColor = .systemGray
-        $0.numberOfLines = 0
-    }
-    
-    private lazy var isbnLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.isbn
-        $0.textColor = .systemGray
-        $0.numberOfLines = 0
+    private lazy var bookDescriptionStackView: UIStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.alignment = .leading
+        $0.spacing = moderateScale(number: 4)
     }
     
     private lazy var descriptionLabel: UILabel = UILabel().then {
-        $0.text = viewModel.bookInfo.description
-        $0.textColor = .systemGray
+        $0.attributedText = FontManager.body2SB.setFont(viewModel.bookInfo.description,
+                                                        alignment: .left)
+        $0.textColor = .black
         $0.numberOfLines = 0
     }
     
     private lazy var bookStateStackView: UIStackView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = moderateScale(number: 10)
+        $0.spacing = moderateScale(number: 20)
     }
     
     private lazy var readingBookImageView: TouchableImageView = TouchableImageView(frame: .zero).then {
@@ -129,20 +148,23 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
-        containerView.addSubviews([bookImageView,
+        containerView.addSubviews([bookBackgroundView,
                                    bookStateStackView,
-                                   bookDetailStackView])
+                                   bookTitleStackView,
+                                   firstDividerView,
+                                   bookPriceStackView,
+                                   secondDividerView,
+                                   bookDescriptionStackView])
+        bookBackgroundView.addSubview(bookImageView)
         bookStateStackView.addArrangedSubviews([readingBookImageView,
                                                 wantToReadBookImageView,
                                                 readDoneBookImageView])
-        bookDetailStackView.addArrangedSubviews([bookTitleLabel,
-                                                 linkLabel,
-                                                 authorLabel,
-                                                 isbnLabel,
-                                                 pubdateLabel,
-                                                 discountLabel,
-                                                 publisherLabel,
-                                                 descriptionLabel])
+        bookTitleStackView.addArrangedSubviews([bookTitleLabel,
+                                                authorLabel,
+                                                publisherLabel])
+        bookPriceStackView.addArrangedSubviews([linkLabel,
+                                                discountLabel])
+        bookDescriptionStackView.addArrangedSubviews([descriptionLabel])
     }
     
     override func makeConstraints() {
@@ -150,7 +172,7 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
         
         scrollView.snp.makeConstraints {
             $0.top.equalTo(topView.snp.bottom)
-            $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview().inset(getSafeAreaBottom())
         }
         
@@ -158,27 +180,54 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
             $0.edges.width.equalToSuperview()
         }
         
-        bookImageView.snp.makeConstraints {
+        bookBackgroundView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(moderateScale(number: 20))
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(moderateScale(number: 200))
+            $0.height.equalTo(moderateScale(number: 500))
+        }
+        
+        bookImageView.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.height.equalTo(moderateScale(number: 400))
         }
         
         bookStateStackView.snp.makeConstraints {
             $0.bottom.equalTo(bookImageView)
-            $0.trailing.equalToSuperview()
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
         }
         
         [wantToReadBookImageView,
          readDoneBookImageView].forEach {
             $0.snp.makeConstraints {
-                $0.size.equalTo(moderateScale(number: 24))
+                $0.size.equalTo(moderateScale(number: 26))
             }
         }
         
-        bookDetailStackView.snp.makeConstraints {
-            $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 20))
+        bookTitleStackView.snp.makeConstraints {
+            $0.top.equalTo(bookBackgroundView.snp.bottom).offset(moderateScale(number: 20))
+            $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
+        }
+        
+        firstDividerView.snp.makeConstraints {
+            $0.top.equalTo(bookTitleStackView.snp.bottom).offset(moderateScale(number: 6))
+            $0.height.equalTo(moderateScale(number: 12))
             $0.leading.trailing.equalToSuperview()
+        }
+        
+        bookPriceStackView.snp.makeConstraints {
+            $0.top.equalTo(firstDividerView.snp.bottom).offset(moderateScale(number: 16))
+            $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
+        }
+        
+        secondDividerView.snp.makeConstraints {
+            $0.top.equalTo(bookPriceStackView.snp.bottom).offset(moderateScale(number: 6))
+            $0.height.equalTo(moderateScale(number: 12))
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        bookDescriptionStackView.snp.makeConstraints {
+            $0.top.equalTo(secondDividerView.snp.bottom).offset(moderateScale(number: 16))
+            $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 20))
             $0.bottom.equalToSuperview()
         }
     }
@@ -203,6 +252,13 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
                                      description: "읽었던 책 카테고리에 추가할게요!",
                                      submitCompletion: { self?.changeBookCategory(with: .readDone) })
         }
+        
+        bookPriceStackView.didTapped { [weak self] in
+            guard let self = self else { return }
+            guard let url = URL(string: self.viewModel.bookInfo.link) else { return }
+            self.coordinator?.moveToAnotherFlow(TabBarFlow.common(.web),
+                                                userData: ["urlRequest": URLRequest(url: url)])
+        }
     }
     
     private func bind() {
@@ -226,5 +282,36 @@ final class BookDetailViewController: BaseNavigationViewController, CommonCoordi
                                             userInfo: ["bookCategory": category])
             self.showToastMessageView(title: "나의 책 보관함에 저장되었어요!")
         } catch {}
+    }
+}
+
+import UIKit
+
+class GradientView: UIView {
+    private let gradientLayer = CAGradientLayer()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupGradient()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupGradient()
+    }
+
+    private func setupGradient() {
+        gradientLayer.colors = [
+            UIColor(red: 130/255, green: 38/255, blue: 38/255, alpha: 1.0).cgColor,  // 밑에 진한 붉은 갈색
+            UIColor(red: 193/255, green: 74/255, blue: 62/255, alpha: 0.3).cgColor   // 위에 연한 붉은 갈색 (투명)
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 1) // 밑에서 시작 (중앙 하단)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 0)   // 위로 끝 (중앙 상단)
+        layer.insertSublayer(gradientLayer, at: 0)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = bounds
     }
 }
