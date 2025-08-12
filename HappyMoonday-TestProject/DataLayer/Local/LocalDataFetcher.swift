@@ -33,8 +33,6 @@ final class LocalDataFetcher: LocalDataFetchable {
             )
         }
         
-        print("updateEntity<<<<<<\n\(updatedEntity)")
-        
         try realm.write {
             let category = realm.objects(BookCategoryEntity.self)
                 .filter("name == %@", categoryName.rawValue)
@@ -46,9 +44,21 @@ final class LocalDataFetcher: LocalDataFetchable {
                     return newCategory
                 }()
             
-            let realmBook: RealmBookItem
+            var realmBook: RealmBookItem
             if let existingBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: updatedEntity.isbn) {
                 realmBook = existingBook
+                realmBook.title = updatedEntity.title
+                realmBook.link = updatedEntity.link
+                realmBook.image = updatedEntity.image
+                realmBook.author = updatedEntity.author
+                realmBook.discount = updatedEntity.discount
+                realmBook.publisher = updatedEntity.publisher
+                realmBook.pubdate = updatedEntity.pubdate
+                realmBook.bookDescription = updatedEntity.description
+                realmBook.recordDate = updatedEntity.recordDate
+                realmBook.startDate = updatedEntity.startDate
+                realmBook.endDate = updatedEntity.endDate
+                realmBook.note = updatedEntity.note
             } else {
                 realmBook = RealmBookItem(from: updatedEntity)
                 realm.add(realmBook)
@@ -78,7 +88,11 @@ final class LocalDataFetcher: LocalDataFetchable {
                 publisher: realmBook.publisher,
                 pubdate: realmBook.pubdate,
                 isbn: realmBook.isbn,
-                description: realmBook.bookDescription
+                description: realmBook.bookDescription,
+                recordDate: realmBook.recordDate,
+                startDate: realmBook.startDate,
+                endDate: realmBook.endDate,
+                note: realmBook.note
             )
         }
     }

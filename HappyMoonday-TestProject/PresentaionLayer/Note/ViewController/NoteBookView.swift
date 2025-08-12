@@ -39,16 +39,37 @@ struct NoteBookView: View {
                             .onTapGesture {
                                 Task {
                                     do {
-                                        try viewModel.noteBook(startDate: Date(),
-                                                               endDate: Date(),
+                                        try viewModel.noteBook(startDate: startDate,
+                                                               endDate: endDate,
                                                                note: noteText)
                                     } catch {}
                                 }
                             }
                     }
                     
+                    HStack {
+                        AsyncImage(url: URL(string: viewModel.bookInfo.image)) { image in
+                            image.resizable()
+                        } placeholder: {
+                            Color.gray
+                        }
+                        .frame(width: 60, height: 90)
+                        .cornerRadius(8)
+                        
+                        VStack(alignment: .leading) {
+                            Text(viewModel.bookInfo.title)
+                                .font(.headline)
+                            Text(viewModel.bookInfo.author)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .padding(.vertical, 8)
+                    
                     Text("시작일")
                         .font(Font(FontManager.body2B.font!))
+                    
                     Button {
                         showStartDatePicker = true
                     } label: {
@@ -76,6 +97,7 @@ struct NoteBookView: View {
                     
                     Text("종료일")
                         .font(Font(FontManager.body2B.font!))
+                    
                     Button {
                         showEndDatePicker = true
                     } label: {
@@ -103,6 +125,9 @@ struct NoteBookView: View {
                 }
                 .padding(.top, 10)
                 .padding(.horizontal, 20)
+            }
+            .onAppear {
+                startDate = viewModel.bookInfo.startDate ?? Date()
             }
             .onTapGesture {
                 hideKeyboard()
