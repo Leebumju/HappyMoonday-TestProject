@@ -22,8 +22,8 @@
 
 
 ## 환경
-- iOS 17+
-- Swift 5.9
+- iOS 15+
+- Swift 5.0
 - SwiftUI + UIKit 혼합 사용
 
 ## 프로젝트 빌드 및 실행 방법
