@@ -36,7 +36,8 @@ final class WantToReedBookCell: UICollectionViewCell {
     private lazy var bookTitleLabel: UILabel = UILabel().then {
         $0.attributedText = FontManager.body3M.setFont(alignment: .left)
         $0.textColor = .black
-        $0.numberOfLines = 2
+        $0.numberOfLines = 1
+        $0.lineBreakMode = .byTruncatingTail
     }
     
     private lazy var linkLabel: UILabel = UILabel().then {
@@ -48,7 +49,7 @@ final class WantToReedBookCell: UICollectionViewCell {
     private lazy var discountLabel: UILabel = UILabel().then {
         $0.attributedText = FontManager.body2SB.setFont(alignment: .left)
         $0.textColor = .black
-        $0.numberOfLines = 2
+        $0.numberOfLines = 1
     }
     
     override init(frame: CGRect) {
@@ -87,6 +88,7 @@ final class WantToReedBookCell: UICollectionViewCell {
             $0.bottom.equalToSuperview()
         }
         bookInfoStackView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(moderateScale(number: 6))
             $0.leading.trailing.equalToSuperview().inset(moderateScale(number: 6))
         }
     }
