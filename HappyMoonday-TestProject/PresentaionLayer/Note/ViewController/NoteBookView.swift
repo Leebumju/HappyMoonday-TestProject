@@ -17,7 +17,6 @@ struct NoteBookView: View {
     @State private var showEndDatePicker = false
     @State private var noteText: String = ""
     
-    
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
@@ -39,9 +38,14 @@ struct NoteBookView: View {
                             .onTapGesture {
                                 Task {
                                     do {
+                                        CommonUtil.showLoadingView()
                                         try viewModel.noteBook(startDate: startDate,
                                                                endDate: endDate,
                                                                note: noteText)
+                                        CommonUtil.hideLoadingView()
+                                        CommonUtil.showAlertView(title: "저장 완료",
+                                                                 description: "저장이 완료되었어요!",
+                                                                 submitCompletion: nil)
                                     } catch {}
                                 }
                             }
@@ -122,12 +126,23 @@ struct NoteBookView: View {
                         .labelsHidden()
                         .padding()
                     }
+                    
+                    Text("감상문")
+                        .font(Font(FontManager.body2B.font!))
+
+                    TextEditor(text: $noteText)
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        .frame(height: 150)
                 }
                 .padding(.top, 10)
                 .padding(.horizontal, 20)
             }
             .onAppear {
                 startDate = viewModel.bookInfo.startDate ?? Date()
+                endDate = viewModel.bookInfo.endDate ?? Date()
+                noteText = viewModel.bookInfo.note ?? ""
             }
             .onTapGesture {
                 hideKeyboard()
