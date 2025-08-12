@@ -10,11 +10,18 @@ import SwiftUI
 struct NoteMainView: View {
     @ObservedObject var viewModel: NoteMainViewModel
     var coordinator: AnyNoteCoordinator?
+    @State private var isEditMode: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             Text("노트 목록")
                 .font(Font(FontManager.title2SB.font!))
+            
+            Text(isEditMode ? "완료" : "편집")
+                .font(Font(FontManager.body2M.font!))
+                .onTapGesture {
+                    isEditMode.toggle()
+                }
             
             BookListView(
                 books: viewModel.notedBooks,
@@ -22,7 +29,7 @@ struct NoteMainView: View {
                     print("선택된 책: \(book.title)")
                     coordinator?.moveTo(.noteBook,
                                         userData: ["bookInfo": book])
-                }
+                }, isEditMode: $isEditMode
             )
         }
         .background(Color.white)
@@ -34,6 +41,7 @@ struct NoteMainView: View {
 
 struct BookItemView: View {
     let book: Book.Entity.BookItem
+    @Binding var isEditMode: Bool
     
     var body: some View {
         HStack {
@@ -45,20 +53,37 @@ struct BookItemView: View {
             .frame(width: 60, height: 90)
             .cornerRadius(8)
             
-            VStack(alignment: .leading) {
-                Text(book.title)
-                    .font(.headline)
-                    .truncationMode(.tail)
-                    .lineLimit(2)
-                Text(book.author)
-                    .font(.subheadline)
-                    .lineLimit(1)
-                    .foregroundColor(.secondary)
-                Text("등록일: \(book.recordDate?.dateToString(with: "yyyy-MM-dd") ?? "")")
-                    .font(.caption)
-                    .lineLimit(1)
-                    .foregroundColor(.secondary)
+            HStack(alignment: .center) {
+                VStack(alignment: .leading) {
+                    Text(book.title)
+                        .font(.headline)
+                        .truncationMode(.tail)
+                        .lineLimit(2)
+                    Text(book.author)
+                        .font(.subheadline)
+                        .lineLimit(1)
+                        .foregroundColor(.secondary)
+                    Text("등록일: \(book.recordDate?.dateToString(with: "yyyy-MM-dd") ?? "")")
+                        .font(.caption)
+                        .lineLimit(1)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                if isEditMode {
+                    Button(action: {
+                        // 버튼 클릭 시 동작
+                    }) {
+                        Image(systemName: "minus.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(.red)
+                    }
+                    .frame(width: 24, height: 24)
+                }
             }
+            
             Spacer()
         }
         .padding(.vertical, 8)

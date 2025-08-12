@@ -154,15 +154,3 @@ struct NoteBookView: View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
-
-struct NoteTextFieldView: View {
-    @Binding var text: String
-    var placeholder: String
-    
-    var body: some View {
-        TextField(placeholder, text: $text)
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
-    }
-}
