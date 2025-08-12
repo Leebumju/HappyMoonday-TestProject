@@ -12,9 +12,7 @@ import Combine
 class SearchBooksMainViewController: BaseViewController {
     private var cancelBag = Set<AnyCancellable>()
     var coordinator: AnySearchCoordinator?
-    
-    private var storedKeyword: String = ""
-    
+
     private lazy var titleLabel: UILabel = UILabel().then {
         $0.attributedText = FontManager.title2SB.setFont("도서 검색",
                                                          alignment: .center)
@@ -160,7 +158,7 @@ class SearchBooksMainViewController: BaseViewController {
                 CommonUtil.showLoadingView()
                 try await viewModel.searchBooks(with: keyword)
                 CommonUtil.hideLoadingView()
-                self.storedKeyword = keyword
+                self.viewModel.storedKeyword = keyword
             } catch {}
         }
     }
@@ -242,12 +240,11 @@ extension SearchBooksMainViewController: UICollectionViewDataSource {
 }
 
 extension SearchBooksMainViewController: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//       
-//        
-//        if indexPath.item >= total - 3 {
-//            searchBooks(keyword: storedKeyword)
-//        }
-//    }
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        if viewModel.searchedBooks.items.count > viewModel.itemsPerPage - 1 && indexPath.item >= viewModel.searchedBooks.items.count - 3 {
+            searchBooks(keyword: viewModel.storedKeyword)
+        }
+    }
 }
 

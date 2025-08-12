@@ -32,7 +32,6 @@ final class RemoteDataFetcher: RemoteDataFetchable {
             guard let decodedResponse = try DecodeUtil.decode(Book.Response.self, data: response.data) else {
                 throw NetworkError.typeMismatch
             }
-            
             return decodedResponse.entity
         } catch {
             print(error)
