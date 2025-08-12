@@ -27,8 +27,11 @@ struct NoteMainView: View {
                 books: viewModel.notedBooks,
                 onBookTap: { book in
                     print("선택된 책: \(book.title)")
-                    coordinator?.moveTo(.noteBook,
-                                        userData: ["bookInfo": book])
+                    coordinator?.moveTo(.noteBook, userData: ["bookInfo": book])
+                },
+                onDeleteBook: { book in
+                    print("삭제할 책: \(book.title)")
+                    // 삭제 처리 로직 넣기
                 }, isEditMode: $isEditMode
             )
         }
@@ -42,6 +45,9 @@ struct NoteMainView: View {
 struct BookItemView: View {
     let book: Book.Entity.BookItem
     @Binding var isEditMode: Bool
+    
+    let onDelete: () -> Void
+    let onTap: () -> Void 
     
     var body: some View {
         HStack {
@@ -73,13 +79,14 @@ struct BookItemView: View {
                 
                 if isEditMode {
                     Button(action: {
-                        // 버튼 클릭 시 동작
+                        onDelete()
                     }) {
                         Image(systemName: "minus.circle.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .foregroundColor(.red)
                     }
+                    .buttonStyle(PlainButtonStyle())
                     .frame(width: 24, height: 24)
                 }
             }
@@ -87,22 +94,28 @@ struct BookItemView: View {
             Spacer()
         }
         .padding(.vertical, 8)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap()
+        }
     }
 }
 
 struct BookListView: View {
     let books: [Book.Entity.BookItem]
     let onBookTap: (Book.Entity.BookItem) -> Void
+    let onDeleteBook: (Book.Entity.BookItem) -> Void
     @Binding var isEditMode: Bool
     
     var body: some View {
         List(books) { book in
-            BookItemView(book: book,
-                         isEditMode: $isEditMode)
-                .onTapGesture {
-                    onBookTap(book)
-                }
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            BookItemView(
+                book: book,
+                isEditMode: $isEditMode,
+                onDelete: { onDeleteBook(book) },
+                onTap: { onBookTap(book) }
+            )
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
         .listStyle(PlainListStyle())
     }
