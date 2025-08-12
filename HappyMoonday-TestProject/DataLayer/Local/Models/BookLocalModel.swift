@@ -6,9 +6,10 @@
 //
 
 import RealmSwift
+import Foundation
 
-class BookLocalModel: Object {
-    @Persisted(primaryKey: true) var id: ObjectId
+final class RealmBookItem: Object {
+    @Persisted(primaryKey: true) var isbn: String = ""
     @Persisted var title: String = ""
     @Persisted var link: String = ""
     @Persisted var image: String = ""
@@ -16,11 +17,15 @@ class BookLocalModel: Object {
     @Persisted var discount: String = ""
     @Persisted var publisher: String = ""
     @Persisted var pubdate: String = ""
-    @Persisted var isbn: String = ""
     @Persisted var bookDescription: String = ""
-
-    convenience init(entity: Book.Entity.BookItem) {
+    @Persisted var recordDate: Date?
+    @Persisted var startDate: Date?
+    @Persisted var endDate: Date?
+    @Persisted var note: String?
+    
+    convenience init(from entity: Book.Entity.BookItem) {
         self.init()
+        self.isbn = entity.isbn
         self.title = entity.title
         self.link = entity.link
         self.image = entity.image
@@ -28,21 +33,16 @@ class BookLocalModel: Object {
         self.discount = entity.discount
         self.publisher = entity.publisher
         self.pubdate = entity.pubdate
-        self.isbn = entity.isbn
         self.bookDescription = entity.description
+        self.recordDate = entity.recordDate
+        self.startDate = entity.startDate
+        self.endDate = entity.endDate
+        self.note = entity.note
     }
+}
 
-    func toEntity() -> Book.Entity.BookItem {
-        return Book.Entity.BookItem(
-            title: title,
-            link: link,
-            image: image,
-            author: author,
-            discount: discount,
-            publisher: publisher,
-            pubdate: pubdate,
-            isbn: isbn,
-            description: bookDescription
-        )
-    }
+final class BookCategoryEntity: Object {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var name: String = ""
+    @Persisted var books = List<RealmBookItem>()
 }

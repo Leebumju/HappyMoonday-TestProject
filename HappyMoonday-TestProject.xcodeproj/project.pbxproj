@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D86CF2C02E49A698007CA438 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D88D547C2E4707D5000329AD /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D88D51782E46390A000329AD /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51772E46390A000329AD /* CombineMoya */; };
 		D88D517A2E46390A000329AD /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = D88D51792E46390A000329AD /* Moya */; };
 		D88D517C2E46390A000329AD /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = D88D517B2E46390A000329AD /* ReactiveMoya */; };
@@ -18,6 +19,20 @@
 		D88D53382E46F440000329AD /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D88D53372E46F440000329AD /* Kingfisher */; };
 		D88D547D2E4707D5000329AD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D88D547C2E4707D5000329AD /* RealmSwift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D86CF2C12E49A698007CA438 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D86CF2C02E49A698007CA438 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		D8B102052E4600E800CB04DF /* HappyMoonday-TestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HappyMoonday-TestProject.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +106,7 @@
 				D8B102012E4600E800CB04DF /* Sources */,
 				D8B102022E4600E800CB04DF /* Frameworks */,
 				D8B102032E4600E800CB04DF /* Resources */,
+				D86CF2C12E49A698007CA438 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -186,14 +202,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 277QUM3J2F;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = Z62NB3F274;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "HappyMoonday-TestProject/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -213,14 +230,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 277QUM3J2F;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = Z62NB3F274;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "HappyMoonday-TestProject/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

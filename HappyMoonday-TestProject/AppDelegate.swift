@@ -6,14 +6,28 @@
 //
 
 import UIKit
+import RealmSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let config = Realm.Configuration(
+            schemaVersion: 3,
+            migrationBlock: { migration, oldSchemaVersion in
+                if oldSchemaVersion < 3 {
+                    migration.enumerateObjects(ofType: RealmBookItem.className()) { oldObject, newObject in
+                        newObject?["recordDate"] = nil
+                        newObject?["startDate"] = nil
+                        newObject?["endDate"] = nil
+                        newObject?["note"] = nil
+                    }
+                }
+            }
+        )
+        
+        Realm.Configuration.defaultConfiguration = config
+        
         return true
     }
 

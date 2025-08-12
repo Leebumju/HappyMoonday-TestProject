@@ -94,20 +94,20 @@ final class TabBarCoordinator: NSObject, TabBarCoordinatable {
             vc = libraryCoordinator.start()
             libraryCoordinator.parentCoordinator = self
             vc.tabBarItem = UITabBarItem(title: nil,
-                                         image: UIImage(systemName: "circle.fill")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal),
-                                         selectedImage: UIImage(systemName: "circle.fill")?.withTintColor(.darkGray, renderingMode: .alwaysOriginal))
+                                         image: UIImage(systemName: "books.vertical.fill")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal),
+                                         selectedImage: UIImage(systemName: "books.vertical.fill")?.withTintColor(.darkGray, renderingMode: .alwaysOriginal))
         case .search:
             vc = searchCoordinator.start()
             searchCoordinator.parentCoordinator = self
             vc.tabBarItem = UITabBarItem(title: nil,
-                                         image: UIImage(systemName: "circle.fill")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal),
-                                         selectedImage: UIImage(systemName: "circle.fill")?.withTintColor(.darkGray, renderingMode: .alwaysOriginal))
+                                         image: UIImage(systemName: "magnifyingglass")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal),
+                                         selectedImage: UIImage(systemName: "magnifyingglass")?.withTintColor(.darkGray, renderingMode: .alwaysOriginal))
         case .note:
             vc = noteCoordinator.start()
             noteCoordinator.parentCoordinator = self
             vc.tabBarItem = UITabBarItem(title: nil,
-                                         image: UIImage(systemName: "circle.fill")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal),
-                                         selectedImage: UIImage(systemName: "circle.fill")?.withTintColor(.darkGray, renderingMode: .alwaysOriginal))
+                                         image: UIImage(systemName: "book.pages.fill")?.withTintColor(.lightGray, renderingMode: .alwaysOriginal),
+                                         selectedImage: UIImage(systemName: "book.pages.fill")?.withTintColor(.darkGray, renderingMode: .alwaysOriginal))
         }
         
         vc.tabBarItem.imageInsets = UIEdgeInsets(top: 14, left: 0, bottom: -29, right: 0)

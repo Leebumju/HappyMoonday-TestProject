@@ -16,8 +16,6 @@ final class LocalDataFetcher: LocalDataFetchable {
         var updatedEntity = bookEntity
         if updatedEntity.isbn.isEmpty {
             let newISBN = generateUserISBN(in: realm)
-            print(">>>> generated ISBN: \(newISBN)")
-            
             updatedEntity = Book.Entity.BookItem(
                 title: updatedEntity.title,
                 link: updatedEntity.link,
@@ -27,7 +25,11 @@ final class LocalDataFetcher: LocalDataFetchable {
                 publisher: updatedEntity.publisher,
                 pubdate: updatedEntity.pubdate,
                 isbn: newISBN,
-                description: updatedEntity.description
+                description: updatedEntity.description,
+                recordDate: updatedEntity.recordDate,
+                startDate: updatedEntity.startDate,
+                endDate: updatedEntity.endDate,
+                note: updatedEntity.note
             )
         }
         
@@ -42,9 +44,21 @@ final class LocalDataFetcher: LocalDataFetchable {
                     return newCategory
                 }()
             
-            let realmBook: RealmBookItem
+            var realmBook: RealmBookItem
             if let existingBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: updatedEntity.isbn) {
                 realmBook = existingBook
+                realmBook.title = updatedEntity.title
+                realmBook.link = updatedEntity.link
+                realmBook.image = updatedEntity.image
+                realmBook.author = updatedEntity.author
+                realmBook.discount = updatedEntity.discount
+                realmBook.publisher = updatedEntity.publisher
+                realmBook.pubdate = updatedEntity.pubdate
+                realmBook.bookDescription = updatedEntity.description
+                realmBook.recordDate = updatedEntity.recordDate
+                realmBook.startDate = updatedEntity.startDate
+                realmBook.endDate = updatedEntity.endDate
+                realmBook.note = updatedEntity.note
             } else {
                 realmBook = RealmBookItem(from: updatedEntity)
                 realm.add(realmBook)
@@ -74,9 +88,29 @@ final class LocalDataFetcher: LocalDataFetchable {
                 publisher: realmBook.publisher,
                 pubdate: realmBook.pubdate,
                 isbn: realmBook.isbn,
-                description: realmBook.bookDescription
+                description: realmBook.bookDescription,
+                recordDate: realmBook.recordDate,
+                startDate: realmBook.startDate,
+                endDate: realmBook.endDate,
+                note: realmBook.note
             )
         }
+    }
+    
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
+        let realm = try! Realm()
+         
+         try realm.write {
+             guard let categoryEntity = realm.objects(BookCategoryEntity.self)
+                     .filter("name == %@", category.rawValue)
+                     .first else { return }
+             
+             guard let realmBook = realm.object(ofType: RealmBookItem.self, forPrimaryKey: book.isbn) else { return }
+             
+             if let index = categoryEntity.books.firstIndex(of: realmBook) {
+                 categoryEntity.books.remove(at: index)
+             }
+         }
     }
     
     func saveRecentSearchKeyword(_ keyword: String) throws {
@@ -120,35 +154,4 @@ final class LocalDataFetcher: LocalDataFetchable {
             .count
         return "user\(userBooksCount)"
     }
-}
-
-final class RealmBookItem: Object {
-    @Persisted(primaryKey: true) var isbn: String = ""
-    @Persisted var title: String = ""
-    @Persisted var link: String = ""
-    @Persisted var image: String = ""
-    @Persisted var author: String = ""
-    @Persisted var discount: String = ""
-    @Persisted var publisher: String = ""
-    @Persisted var pubdate: String = ""
-    @Persisted var bookDescription: String = ""
-    
-    convenience init(from entity: Book.Entity.BookItem) {
-        self.init()
-        self.isbn = entity.isbn
-        self.title = entity.title
-        self.link = entity.link
-        self.image = entity.image
-        self.author = entity.author
-        self.discount = entity.discount
-        self.publisher = entity.publisher
-        self.pubdate = entity.pubdate
-        self.bookDescription = entity.description
-    }
-}
-
-final class BookCategoryEntity: Object {
-    @Persisted(primaryKey: true) var id: ObjectId
-    @Persisted var name: String = ""
-    @Persisted var books = List<RealmBookItem>()
 }

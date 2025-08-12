@@ -18,13 +18,14 @@ final class NoDataCell: UICollectionViewCell {
     }
     
     private lazy var noDataLabel: UILabel = UILabel().then {
+        $0.attributedText = FontManager.body2M.setFont(alignment: .center)
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         $0.numberOfLines = 0
-        $0.textAlignment = .center
     }
     
     private lazy var confirmButton = TouchableLabel().then {
+        $0.font = FontManager.body1M.font
         $0.text = "확인"
         $0.textColor = .white
         $0.layer.cornerRadius = moderateScale(number: 12)
@@ -68,6 +69,8 @@ final class NoDataCell: UICollectionViewCell {
             categoryText = "읽고 싶은 책"
         case .readDone:
             categoryText = "읽은 책"
+        case .noted:
+            categoryText = "기록된 책"
         }
         noDataLabel.text = "현재 보관함에 \(categoryText)이 없어요..\n지금 추가해보세요!"
     }

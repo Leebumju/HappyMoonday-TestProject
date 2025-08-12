@@ -5,10 +5,13 @@
 //  Created by 이범준 on 8/9/25.
 //
 
+import Foundation
+
 enum BookCategory: String {
     case reading
     case wantToRead
     case readDone
+    case noted
 }
 
 enum Book {
@@ -53,7 +56,12 @@ enum Book {
             let isbn: String
             let description: String
             
-            init(title: String, link: String, image: String, author: String, discount: String, publisher: String, pubdate: String, isbn: String, description: String) {
+            var recordDate: Date?
+            var startDate: Date?
+            var endDate: Date?
+            var note: String?
+            
+            init(title: String, link: String, image: String, author: String, discount: String, publisher: String, pubdate: String, isbn: String, description: String, recordDate: Date? = nil, startDate: Date? = nil, endDate: Date? = nil, note: String? = nil) {
                 self.title = title
                 self.link = link
                 self.image = image
@@ -63,6 +71,10 @@ enum Book {
                 self.pubdate = pubdate
                 self.isbn = isbn
                 self.description = description
+                self.recordDate = recordDate
+                self.startDate = startDate
+                self.endDate = endDate
+                self.note = note
             }
             
             init() {
@@ -75,6 +87,10 @@ enum Book {
                 self.pubdate = ""
                 self.isbn = ""
                 self.description = ""
+                self.recordDate = nil
+                self.startDate = nil
+                self.endDate = nil
+                self.note = nil
             }
         }
     }

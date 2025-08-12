@@ -45,6 +45,17 @@ struct Injector {
             return usecase
         }
         
+        container.register(NoteRepositoryProtocol.self) { resolver in
+            let repository = NoteRepository(remoteDataFetcher: resolver.resolve(RemoteDataFetchable.self)!,
+                                              localDataFetcher: resolver.resolve(LocalDataFetchable.self)!)
+            return repository
+        }
+        
+        container.register(NoteUsecaseProtocol.self) { resolver in
+            let usecase = NoteUsecase(repository: resolver.resolve(NoteRepositoryProtocol.self)!)
+            return usecase
+        }
+        
         return container
     }()
 }

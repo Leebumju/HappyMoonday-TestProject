@@ -11,7 +11,9 @@ import Then
 
 final class NoSearchDataCell: UICollectionViewCell {
     private lazy var noDataLabel: UILabel = UILabel().then {
-        $0.text = "검색 결과가 없어요!"
+        $0.attributedText = FontManager.body2M.setFont("검색 결과가 없어요!\n검색어를 입력해 주세요.",
+                                                       alignment: .center)
+        $0.numberOfLines = 0
     }
     
     override init(frame: CGRect) {

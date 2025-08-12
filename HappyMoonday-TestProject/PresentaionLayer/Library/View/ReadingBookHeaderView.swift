@@ -19,6 +19,11 @@ final class ReadingBookHeaderView: UICollectionReusableView {
                                                         alignment: .left)
     }
     
+    private(set) lazy var editButton: TouchableLabel = TouchableLabel().then {
+        $0.attributedText = FontManager.body2M.setFont("편집", alignment: .right)
+        $0.textColor = .systemGray
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -33,7 +38,8 @@ final class ReadingBookHeaderView: UICollectionReusableView {
     
     private func addViews() {
         addSubview(containerView)
-        containerView.addSubviews([titleLabel])
+        containerView.addSubviews([titleLabel,
+                                   editButton])
     }
     
     private func makeConstraints() {
@@ -45,5 +51,14 @@ final class ReadingBookHeaderView: UICollectionReusableView {
             $0.leading.equalToSuperview().inset(moderateScale(number: 20))
             $0.top.bottom.equalToSuperview().inset(moderateScale(number: 12))
         }
+        
+        editButton.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
+        }
+    }
+    
+    func updateDeleteMode(isEditMode: Bool) {
+        editButton.text = isEditMode ? "완료" : "편집"
     }
 }

@@ -18,6 +18,11 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
         $0.attributedText = FontManager.body1SB.setFont(alignment: .left)
     }
     
+    private(set) lazy var editButton: TouchableLabel = TouchableLabel().then {
+        $0.attributedText = FontManager.body2M.setFont("편집", alignment: .right)
+        $0.textColor = .systemGray
+    }
+    
     private lazy var dividerView: UIView = UIView().then {
         $0.backgroundColor = .systemGray5
     }
@@ -37,6 +42,7 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([titleLabel,
+                                   editButton,
                                    dividerView])
     }
     
@@ -51,6 +57,11 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
             $0.bottom.equalToSuperview().offset(moderateScale(number: -12))
         }
         
+        editButton.snp.makeConstraints {
+            $0.centerY.equalTo(titleLabel)
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
+        }
+        
         dividerView.snp.makeConstraints {
             $0.leading.trailing.top.equalToSuperview()
             $0.height.equalTo(moderateScale(number: 8))
@@ -59,5 +70,9 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
     
     func updateView(with titleText: String) {
         titleLabel.text = titleText
+    }
+    
+    func updateDeleteMode(isEditMode: Bool) {
+        editButton.text = isEditMode ? "완료" : "편집"
     }
 }

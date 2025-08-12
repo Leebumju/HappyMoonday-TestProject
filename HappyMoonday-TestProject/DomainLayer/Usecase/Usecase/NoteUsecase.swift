@@ -1,37 +1,28 @@
 //
-//  LibraryUsecase.swift
+//  NoteUsecase.swift
 //  HappyMoonday-TestProject
 //
-//  Created by 이범준 on 8/9/25.
+//  Created by 이범준 on 8/11/25.
 //
 
 import Foundation
 import Combine
 
-final class LibraryUsecase {
+final class NoteUsecase {
     private(set) var errorSubject = PassthroughSubject<Error, Never>()
     
-    private let repository: LibraryRepositoryProtocol
+    private let repository: NoteRepositoryProtocol
     
-    init(repository: LibraryRepositoryProtocol) {
+    init(repository: NoteRepositoryProtocol) {
         self.repository = repository
     }
 }
 
-extension LibraryUsecase: LibraryUsecaseProtocol {
+extension NoteUsecase: NoteUsecaseProtocol {
     func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
         return repository.fetchBooks(in: categoryName)
     }
     
-    func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
-        do {
-            try repository.changeBookCategory(bookEntity, to: category)
-        } catch {
-            errorSubject.send(error)
-            throw error
-        }
-    }
-
     func noteBook(with bookEntity: Book.Entity.BookItem) throws {
         do {
             try repository.changeBookCategory(bookEntity, to: .noted)

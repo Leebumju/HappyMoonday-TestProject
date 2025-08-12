@@ -41,7 +41,16 @@ final class LibraryMainViewModel: BaseViewModel {
             wantToReadBooks = usecase.fetchBooks(in: .wantToRead)
         case .readDone:
             readDoneBooks = usecase.fetchBooks(in: .readDone)
+        case .noted:
+            return
         }
         allBooksSubject.send(())
+    }
+    
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
+        do {
+            try usecase.deleteBookInCategory(book: book, in: category)
+            fetchBooksCategory(with: category)
+        } catch { throw error }
     }
 }
