@@ -17,7 +17,6 @@ final class NoteBookViewModel: ObservableObject {
     init(usecase: NoteUsecaseProtocol, bookInfo: Book.Entity.BookItem) {
         self.usecase = usecase
         self.bookInfo = bookInfo
-        print(">>>>>> \(bookInfo)")
     }
     
     func noteBook(startDate: Date, endDate: Date, note: String) throws {

@@ -14,24 +14,41 @@ struct NoteMainView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
-            Text("노트 목록")
-                .font(Font(FontManager.title2SB.font!))
-            
-            Text(isEditMode ? "완료" : "편집")
-                .font(Font(FontManager.body2M.font!))
-                .onTapGesture {
-                    isEditMode.toggle()
-                }
+            HStack() {
+                Spacer()
+                
+                Text("노트 목록")
+                    .font(Font(FontManager.title2SB.font!))
+                
+                Spacer()
+                
+                Text(isEditMode ? "완료" : "편집")
+                    .font(Font(FontManager.body2M.font!))
+                    .onTapGesture {
+                        isEditMode.toggle()
+                    }
+                    .padding(.trailing, 20)
+            }
             
             BookListView(
                 books: viewModel.notedBooks,
                 onBookTap: { book in
-                    print("선택된 책: \(book.title)")
                     coordinator?.moveTo(.noteBook, userData: ["bookInfo": book])
                 },
                 onDeleteBook: { book in
-                    print("삭제할 책: \(book.title)")
-                    // 삭제 처리 로직 넣기
+                    CommonUtil.showAlertView(title: "감상문 삭제",
+                                             description: "감상문을 삭제하시면 복구가 불가능해요!\n정말 삭제하시겠어요?",
+                                             submitCompletion: {
+                        Task {
+                            do {
+                                CommonUtil.showLoadingView()
+                                try viewModel.deleteNotedBook(book: book)
+                                CommonUtil.hideLoadingView()
+                            } catch {}
+                        }
+                    }
+                    )
+                    
                 }, isEditMode: $isEditMode
             )
         }

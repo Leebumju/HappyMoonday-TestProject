@@ -24,4 +24,7 @@ extension NoteRepository: NoteRepositoryProtocol {
     func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
         try localDataFetcher.changeBookCategory(bookEntity, to: category)
     }
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
+        try localDataFetcher.deleteBookInCategory(book: book, in: category)
+    }
 }
