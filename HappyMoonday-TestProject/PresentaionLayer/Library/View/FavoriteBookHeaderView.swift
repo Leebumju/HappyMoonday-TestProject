@@ -10,8 +10,6 @@ import Then
 import SnapKit
 
 final class FavoriteBookHeaderView: UICollectionReusableView {
-    private var deleteMode: Bool = false
-    
     private lazy var containerView: UIView = UIView().then {
         $0.backgroundColor = .white
     }
@@ -20,7 +18,7 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
         $0.attributedText = FontManager.body1SB.setFont(alignment: .left)
     }
     
-    private(set) lazy var deleteButton: TouchableLabel = TouchableLabel().then {
+    private(set) lazy var editButton: TouchableLabel = TouchableLabel().then {
         $0.attributedText = FontManager.body2M.setFont("편집", alignment: .right)
         $0.textColor = .systemGray
     }
@@ -44,7 +42,7 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([titleLabel,
-                                   deleteButton,
+                                   editButton,
                                    dividerView])
     }
     
@@ -59,7 +57,7 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
             $0.bottom.equalToSuperview().offset(moderateScale(number: -12))
         }
         
-        deleteButton.snp.makeConstraints {
+        editButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
             $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
         }
@@ -74,8 +72,7 @@ final class FavoriteBookHeaderView: UICollectionReusableView {
         titleLabel.text = titleText
     }
     
-    func updateDeleteMode() {
-        deleteMode.toggle()
-        deleteButton.text = deleteMode ? "완료" : "삭제"
+    func updateDeleteMode(isEditMode: Bool) {
+        editButton.text = isEditMode ? "완료" : "편집"
     }
 }

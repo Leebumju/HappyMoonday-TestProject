@@ -22,6 +22,12 @@ final class WantToReedBookCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
+    private(set) lazy var editButton: TouchableImageView = TouchableImageView(frame: .zero).then {
+        $0.contentMode = .scaleAspectFit
+        $0.image = UIImage(systemName: "minus.circle.fill")?.withTintColor(.red,
+                                                                           renderingMode: .alwaysOriginal)
+    }
+    
     private lazy var bookInfoView: UIView = UIView().then {
         $0.backgroundColor = .white
     }
@@ -65,6 +71,7 @@ final class WantToReedBookCell: UICollectionViewCell {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([bookImageView,
+                                   editButton,
                                    bookInfoView])
         bookInfoView.addSubview(bookInfoStackView)
         bookInfoStackView.addArrangedSubviews([bookTitleLabel,
@@ -82,6 +89,11 @@ final class WantToReedBookCell: UICollectionViewCell {
             $0.width.equalTo(moderateScale(number: 80))
             $0.centerX.equalToSuperview()
         }
+        editButton.snp.makeConstraints {
+            $0.size.equalTo(moderateScale(number: 24))
+            $0.top.equalToSuperview().offset(moderateScale(number: 4))
+            $0.trailing.equalToSuperview().offset(moderateScale(number: -4))
+        }
         bookInfoView.snp.makeConstraints {
             $0.top.equalTo(bookImageView.snp.bottom).offset(moderateScale(number: 12))
             $0.leading.trailing.equalToSuperview()
@@ -93,11 +105,12 @@ final class WantToReedBookCell: UICollectionViewCell {
         }
     }
     
-    func updateView(with book: Book.Entity.BookItem) {
+    func updateView(with book: Book.Entity.BookItem, isEditMode: Bool) {
         bookImageView.setImageWithSpinner(
             urlString: book.image,
             placeholder: UIImage(systemName: "photo")
         )
+        editButton.isHidden = !isEditMode
         bookTitleLabel.text = book.title
         discountLabel.text = "\(book.discount)₩"
     }

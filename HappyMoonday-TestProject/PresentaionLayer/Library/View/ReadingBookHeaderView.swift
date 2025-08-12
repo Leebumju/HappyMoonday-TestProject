@@ -10,8 +10,6 @@ import Then
 import SnapKit
 
 final class ReadingBookHeaderView: UICollectionReusableView {
-    private var deleteMode: Bool = false
-    
     private lazy var containerView: UIView = UIView().then {
         $0.backgroundColor = .white
     }
@@ -21,8 +19,8 @@ final class ReadingBookHeaderView: UICollectionReusableView {
                                                         alignment: .left)
     }
     
-    private(set) lazy var deleteButton: TouchableLabel = TouchableLabel().then {
-        $0.attributedText = FontManager.body1B.setFont("편집", alignment: .right)
+    private(set) lazy var editButton: TouchableLabel = TouchableLabel().then {
+        $0.attributedText = FontManager.body2M.setFont("편집", alignment: .right)
         $0.textColor = .systemGray
     }
     
@@ -41,7 +39,7 @@ final class ReadingBookHeaderView: UICollectionReusableView {
     private func addViews() {
         addSubview(containerView)
         containerView.addSubviews([titleLabel,
-                                   deleteButton])
+                                   editButton])
     }
     
     private func makeConstraints() {
@@ -54,14 +52,13 @@ final class ReadingBookHeaderView: UICollectionReusableView {
             $0.top.bottom.equalToSuperview().inset(moderateScale(number: 12))
         }
         
-        deleteButton.snp.makeConstraints {
+        editButton.snp.makeConstraints {
             $0.centerY.equalTo(titleLabel)
             $0.trailing.equalToSuperview().offset(moderateScale(number: -20))
         }
     }
     
-    func updateDeleteMode() {
-        deleteMode.toggle()
-        deleteButton.text = deleteMode ? "완료" : "삭제"
+    func updateDeleteMode(isEditMode: Bool) {
+        editButton.text = isEditMode ? "완료" : "편집"
     }
 }
