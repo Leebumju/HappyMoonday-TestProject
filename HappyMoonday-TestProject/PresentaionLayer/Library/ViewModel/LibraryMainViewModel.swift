@@ -46,4 +46,11 @@ final class LibraryMainViewModel: BaseViewModel {
         }
         allBooksSubject.send(())
     }
+    
+    func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
+        do {
+            try usecase.deleteBookInCategory(book: book, in: category)
+            fetchBooksCategory(with: category)
+        } catch { throw error }
+    }
 }

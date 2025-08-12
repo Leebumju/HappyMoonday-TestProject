@@ -137,13 +137,13 @@ final class LibraryMainViewController: BaseViewController {
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .estimated(moderateScale(number: 46))
                 )
-
+                
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: headerSize,
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )
-
+                
                 let sectionLayout = NSCollectionLayoutSection(
                     group: NSCollectionLayoutGroup.horizontal(
                         layoutSize: groupSize,
@@ -169,7 +169,7 @@ final class LibraryMainViewController: BaseViewController {
                     let interItemSpacing = moderateScale(number: 20)
                     let screenWidth = UIScreen.main.bounds.width
                     let itemWidth = (screenWidth - sideInset * 2 - interItemSpacing) / 2
-
+                    
                     let itemSize = NSCollectionLayoutSize(
                         widthDimension: .absolute(floor(itemWidth)),
                         heightDimension: .absolute(moderateScale(number: 200))
@@ -180,26 +180,26 @@ final class LibraryMainViewController: BaseViewController {
                         widthDimension: .fractionalWidth(1.0),
                         heightDimension: .absolute(moderateScale(number: 200))
                     )
-
+                    
                     let group = NSCollectionLayoutGroup.horizontal(
                         layoutSize: groupSize,
                         subitem: item,
                         count: 2
                     )
-
+                    
                     group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sideInset, bottom: 0, trailing: sideInset)
                     group.interItemSpacing = .fixed(interItemSpacing)
-
+                    
                     let section = NSCollectionLayoutSection(group: group)
-
+                    
                     section.interGroupSpacing = moderateScale(number: 20)
                     section.contentInsets = .zero
-
+                    
                     let headerSize = NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1.0),
                         heightDimension: .estimated(moderateScale(number: 46))
                     )
-
+                    
                     let header = NSCollectionLayoutBoundarySupplementaryItem(
                         layoutSize: headerSize,
                         elementKind: UICollectionView.elementKindSectionHeader,
@@ -207,7 +207,7 @@ final class LibraryMainViewController: BaseViewController {
                     )
                     section.contentInsets.bottom = moderateScale(number: 20)
                     section.boundarySupplementaryItems = [header]
-
+                    
                     return section
                 }
             case 2:
@@ -280,11 +280,11 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 readingHeaderView.updateDeleteMode(isEditMode: readingBooksIsEditMode)
                 bookListView.reloadData()
             }
-           return readingHeaderView
+            return readingHeaderView
         case 1:
             guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
-                                                                                  supplementaryViewOfKind: .header,
-                                                                                  indexPath: indexPath) else { return .init() }
+                                                                                       supplementaryViewOfKind: .header,
+                                                                                       indexPath: indexPath) else { return .init() }
             favoriteBookHeaderView.updateView(with: "읽고 싶은 책")
             favoriteBookHeaderView.editButton.didTapped { [weak self] in
                 guard let self = self else { return }
@@ -292,11 +292,11 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 favoriteBookHeaderView.updateDeleteMode(isEditMode: wantToReadBooksIsEditMode)
                 bookListView.reloadData()
             }
-           return favoriteBookHeaderView
+            return favoriteBookHeaderView
         case 2:
             guard let favoriteBookHeaderView = collectionView.dequeueSupplimentaryView(FavoriteBookHeaderView.self,
-                                                                                  supplementaryViewOfKind: .header,
-                                                                                  indexPath: indexPath) else { return .init() }
+                                                                                       supplementaryViewOfKind: .header,
+                                                                                       indexPath: indexPath) else { return .init() }
             favoriteBookHeaderView.updateView(with: "읽은 책")
             favoriteBookHeaderView.editButton.didTapped { [weak self] in
                 guard let self = self else { return }
@@ -304,7 +304,7 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 favoriteBookHeaderView.updateDeleteMode(isEditMode: readDoneBooksIsEditMode)
                 bookListView.reloadData()
             }
-           return favoriteBookHeaderView
+            return favoriteBookHeaderView
         default:
             return UICollectionReusableView()
         }
@@ -356,7 +356,14 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                                                          userData: ["bookInfo": readingBooks[indexPath.item]])
                 }
                 cell.editButton.didTapped { [weak self] in
-                    print(">>편집모드2")
+                    guard let self = self else { return }
+                    do {
+                        CommonUtil.showLoadingView()
+                        try viewModel.deleteBookInCategory(book: readingBooks[indexPath.item],
+                                                           in: .reading)
+                        CommonUtil.hideLoadingView()
+                        self.showToastMessageView(title: "삭제가 완료되었어요!")
+                    } catch {}
                 }
                 return cell
             }
@@ -381,7 +388,15 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                                                          userData: ["urlRequest": URLRequest(url: url)])
                 }
                 cell.editButton.didTapped { [weak self] in
-                    print(">>편집모드1")
+                    guard let self = self else { return }
+                    do {
+                        CommonUtil.showLoadingView()
+                        try viewModel.deleteBookInCategory(book: wantToReadBooks[indexPath.item],
+                                                           in: .wantToRead)
+                        CommonUtil.hideLoadingView()
+                        self.showToastMessageView(title: "삭제가 완료되었어요!")
+                        
+                    } catch {}
                 }
                 return cell
             }
@@ -410,10 +425,16 @@ extension LibraryMainViewController: UICollectionViewDataSource {
                 cell.reportButton.didTapped { [weak self] in
                     guard let self = self else { return }
                     if self.readDoneBooksIsEditMode {
-                        
+                        do {
+                            CommonUtil.showLoadingView()
+                            try viewModel.deleteBookInCategory(book: readDoneBooks[indexPath.item],
+                                                               in: .readDone)
+                            CommonUtil.hideLoadingView()
+                            self.showToastMessageView(title: "삭제가 완료되었어요!")
+                        } catch {}
                     } else {
                         self.coordinator?.moveToAnotherFlow(TabBarFlow.note(.noteBook),
-                                                             userData: ["bookInfo": readDoneBooks[indexPath.item]])
+                                                            userData: ["bookInfo": readDoneBooks[indexPath.item]])
                     }
                 }
                 return cell
