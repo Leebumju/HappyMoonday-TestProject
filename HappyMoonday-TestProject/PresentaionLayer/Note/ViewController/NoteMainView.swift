@@ -93,10 +93,12 @@ struct BookItemView: View {
 struct BookListView: View {
     let books: [Book.Entity.BookItem]
     let onBookTap: (Book.Entity.BookItem) -> Void
+    @Binding var isEditMode: Bool
     
     var body: some View {
         List(books) { book in
-            BookItemView(book: book)
+            BookItemView(book: book,
+                         isEditMode: $isEditMode)
                 .onTapGesture {
                     onBookTap(book)
                 }
