@@ -48,8 +48,15 @@ struct BookItemView: View {
             VStack(alignment: .leading) {
                 Text(book.title)
                     .font(.headline)
+                    .truncationMode(.tail)
+                    .lineLimit(2)
                 Text(book.author)
                     .font(.subheadline)
+                    .lineLimit(1)
+                    .foregroundColor(.secondary)
+                Text("등록일: \(book.recordDate?.dateToString(with: "yyyy-MM-dd") ?? "")")
+                    .font(.caption)
+                    .lineLimit(1)
                     .foregroundColor(.secondary)
             }
             Spacer()
