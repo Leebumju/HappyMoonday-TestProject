@@ -34,10 +34,10 @@ final class LocalDataFetcher: LocalDataFetchable {
         }
         
         try realm.write {
-            let category = realm.objects(BookCategoryEntity.self)
+            let category = realm.objects(RealmBookCategoryList.self)
                 .filter("name == %@", categoryName.rawValue)
                 .first ?? {
-                    let newCategory = BookCategoryEntity()
+                    let newCategory = RealmBookCategoryList()
                     newCategory.id = ObjectId.generate()
                     newCategory.name = categoryName.rawValue
                     realm.add(newCategory)
@@ -72,7 +72,7 @@ final class LocalDataFetcher: LocalDataFetchable {
     
     func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
         let realm = try! Realm()
-        guard let category = realm.objects(BookCategoryEntity.self)
+        guard let category = realm.objects(RealmBookCategoryList.self)
             .filter("name == %@", categoryName.rawValue)
             .first else {
             return []
@@ -101,7 +101,7 @@ final class LocalDataFetcher: LocalDataFetchable {
         let realm = try! Realm()
          
          try realm.write {
-             guard let categoryEntity = realm.objects(BookCategoryEntity.self)
+             guard let categoryEntity = realm.objects(RealmBookCategoryList.self)
                      .filter("name == %@", category.rawValue)
                      .first else { return }
              
@@ -117,19 +117,19 @@ final class LocalDataFetcher: LocalDataFetchable {
         let realm = try Realm()
         
         try realm.write {
-            if let existing = realm.objects(RecentSearchKeyword.self)
+            if let existing = realm.objects(RealmSearchKeywordItem.self)
                 .filter("keyword == %@", keyword)
                 .first {
                 existing.searchedAt = Date()
             } else {
-                let obj = RecentSearchKeyword()
+                let obj = RealmSearchKeywordItem()
                 obj.keyword = keyword
                 obj.searchedAt = Date()
                 realm.add(obj)
             }
         }
         
-        let allKeywords = realm.objects(RecentSearchKeyword.self)
+        let allKeywords = realm.objects(RealmSearchKeywordItem.self)
             .sorted(byKeyPath: "searchedAt", ascending: false)
         
         if allKeywords.count > 5 {
@@ -142,7 +142,7 @@ final class LocalDataFetcher: LocalDataFetchable {
     
     func fetchRecentSearchKeywords() -> [String] {
         let realm = try! Realm()
-        return realm.objects(RecentSearchKeyword.self)
+        return realm.objects(RealmSearchKeywordItem.self)
             .sorted(byKeyPath: "searchedAt", ascending: false)
             .prefix(5)
             .map { $0.keyword }
