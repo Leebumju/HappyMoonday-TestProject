@@ -8,7 +8,7 @@
 import RealmSwift
 import Foundation
 
-final class RecentSearchKeyword: Object {
+final class RealmSearchKeywordItem: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var keyword: String
     @Persisted var searchedAt: Date = Date()

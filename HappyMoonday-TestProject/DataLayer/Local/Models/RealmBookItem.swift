@@ -41,7 +41,7 @@ final class RealmBookItem: Object {
     }
 }
 
-final class BookCategoryEntity: Object {
+final class RealmBookCategoryList: Object {
     @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var name: String = ""
     @Persisted var books = List<RealmBookItem>()

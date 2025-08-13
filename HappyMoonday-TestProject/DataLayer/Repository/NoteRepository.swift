@@ -21,9 +21,11 @@ extension NoteRepository: NoteRepositoryProtocol {
     func fetchBooks(in categoryName: BookCategory) -> [Book.Entity.BookItem] {
         return localDataFetcher.fetchBooks(in: categoryName)
     }
+    
     func changeBookCategory(_ bookEntity: Book.Entity.BookItem, to category: BookCategory) throws {
         try localDataFetcher.changeBookCategory(bookEntity, to: category)
     }
+    
     func deleteBookInCategory(book: Book.Entity.BookItem, in category: BookCategory) throws {
         try localDataFetcher.deleteBookInCategory(book: book, in: category)
     }
